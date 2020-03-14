@@ -64,7 +64,7 @@ export default {
     },
     sockets: {
         cardassigned (card) {
-            this.alertMsg = 'You have been assigned the card: ' + card + '!'
+            this.alertMsg = 'You have been assigned a card: ' + card + '!'
             this.alertCountDown = 5
             this.mycard = card
         },
