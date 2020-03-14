@@ -5,12 +5,16 @@
     <div v-if="!playerList.length">No players yet</div>
     <div v-else>
         <ul>
-            <li v-for="p in playerList" :key="p">{{ p }}</li>
+            <li v-for="p in playerList" :key="p.name">{{ p.name }} <span v-if="!admin">#{{ p.order }}</span>
+                <b-dropdown v-if="admin" :text="String(p.order)">
+                    <b-dropdown-item v-for="i in [1,2,3,4,5,6,7,8,9,10]" :key="i" @click="updatePlayerOrder(i, p.name)">{{ i }}</b-dropdown-item>
+                </b-dropdown>
+            </li>
         </ul>
     </div>
+    <b-button v-if="admin" @click="shuffleOrder">Shuffle Player Order!</b-button>
     <div v-if="admin" class="adminBlock">
-        Game master section:
-        Cards distribution:
+        <h5>Cards distribution (only game master sees this):</h5>
         Scheriff: <b-input v-model="cards.scheriff" />
         Villager: <b-input v-model="cards.villager" />
         Mafia: <b-input v-model="cards.mafia" />
@@ -77,11 +81,19 @@ export default {
             this.alertCountDown = 5
         },
         nametaken () {
-            this.alertMsg = 'Sorry, this name is already taken!'
+            this.alertMsg = 'Sorry, this name has already been taken!'
             this.alertCountDown = 5
         },
         playerlist (list) {
             this.playerList = list
+        },
+        orderchanged (player) {
+            this.alertMsg = 'Game master changed order number of player ' + player.name + ' to ' + player.order
+            this.alertCountDown = 5
+        },
+        ordershuffled () {
+            this.alertMsg = 'Game master shuffled player order!'
+            this.alertCountDown = 5
         },
         youareadmin () {
             this.alertMsg = 'You are game master of this room!'
@@ -111,6 +123,9 @@ export default {
                 this.$socket.emit('shufflecards', shuffleObj)
             }
         },
+        shuffleOrder () {
+            this.$socket.emit('shuffleorder', this.room)
+        },
         submitName (e) {
             e.preventDefault()
             let joinObject = {
@@ -118,6 +133,14 @@ export default {
                 name: this.playerName
             }
             this.$socket.emit('joinroom', joinObject)
+        },
+        updatePlayerOrder (order, player) {
+            let updOrderObj = {
+                room: this.room,
+                player: player,
+                order: order
+            }
+            this.$socket.emit('updateorder', updOrderObj)
         }
     }
 }
