@@ -76,4 +76,6 @@ jobs:
         echo -n " " >> reliza_command
         echo -n "-b $GITHUB_REF --vcstype git --commit $GITHUB_SHA -k ${{ secrets.RELIZA_API_KEY }} -i ${{ secrets.RELIZA_API_ID }} --vcsuri github.com/$GITHUB_REPOSITORY -v $vvar" >> reliza_command
         cat reliza_command
+        # push latest also
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
         docker run --rm relizaio/reliza-go-client addrelease $(cat reliza_command)
