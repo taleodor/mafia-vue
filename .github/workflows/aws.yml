@@ -1,0 +1,82 @@
+# This workflow will build and push a new container image to Amazon ECR,
+# and then will deploy a new task definition to Amazon ECS, when a release is created
+#
+# To use this workflow, you will need to complete the following set-up steps:
+#
+# 1. Create an ECR repository to store your images.
+#    For example: `aws ecr create-repository --repository-name my-ecr-repo --region us-east-2`.
+#    Replace the value of `ECR_REPOSITORY` in the workflow below with your repository's name.
+#    Replace the value of `aws-region` in the workflow below with your repository's region.
+#
+# 2. Create an ECS task definition, an ECS cluster, and an ECS service.
+#    For example, follow the Getting Started guide on the ECS console:
+#      https://us-east-2.console.aws.amazon.com/ecs/home?region=us-east-2#/firstRun
+#    Replace the values for `service` and `cluster` in the workflow below with your service and cluster names.
+#
+# 3. Store your ECS task definition as a JSON file in your repository.
+#    The format should follow the output of `aws ecs register-task-definition --generate-cli-skeleton`.
+#    Replace the value of `task-definition` in the workflow below with your JSON file's name.
+#    Replace the value of `container-name` in the workflow below with the name of the container
+#    in the `containerDefinitions` section of the task definition.
+#
+# 4. Store an IAM user access key in GitHub Actions secrets named `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+#    See the documentation for each action used below for the recommended IAM policies for this IAM user,
+#    and best practices on handling the access key credentials.
+
+on:
+  release:
+    types: [created]
+
+name: Push to AWS ECR
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: mafia-vue
+        IMAGE_TAG: ${{ github.sha }}
+      run: |
+        # get version
+        docker pull relizaio/reliza-go-client
+        docker run --rm relizaio/reliza-go-client getversion -k ${{ secrets.RELIZA_API_KEY }} -i ${{ secrets.RELIZA_API_ID }} -b master --metadata GitHub > full_version_output 2>&1
+        # show reliza command output in case there is error
+        cat full_version_output
+        # now construct actual version - we could use jq, but why install another tool in CI env?
+        cat full_version_output | grep version | cut -d ':' -f 2 | cut -d '"' -f 2 > version
+        vvar=$(cat version)
+        # version without meta for docker registry
+        vvartag=$(cat version | cut -d '+' -f 1)
+        # Build a docker container and
+        # push it to ECR so that it can
+        # be deployed to ECS.
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$vvartag -t $ECR_REGISTRY/$ECR_REPOSITORY:latest --build-arg VERSION=$vvar --build-arg CI_ENV=github$GITHUB_SHA --build-arg GIT_COMMIT=$GITHUB_SHA --build-arg GIT_BRANCH=$GITHUB_REF .
+        echo -n "--artid $ECR_REGISTRY/$ECR_REPOSITORY " >> reliza_command
+        echo -n "--artbuildid github$GITHUB_ACTION$GITHUB_SHA " >> reliza_command
+        echo -n "--artcimeta GitHub Actions " >> reliza_command
+        echo -n "--arttype Docker " >> reliza_command
+        echo -n "--artdigests " >> reliza_command
+        echo -n $(docker push $ECR_REGISTRY/$ECR_REPOSITORY:$vvartag | grep sha256 | cut -f 3 -d ' ') >> reliza_command
+        echo -n " " >> reliza_command
+        echo -n "-b $GITHUB_REF --vcstype git --commit $GITHUB_SHA -k ${{ secrets.RELIZA_API_KEY }} -i ${{ secrets.RELIZA_API_ID }} --vcsuri github.com/$GITHUB_REPOSITORY -v $vvar" >> reliza_command
+        cat reliza_command
+        docker run --rm relizaio/reliza-go-client addrelease $(cat reliza_command)
