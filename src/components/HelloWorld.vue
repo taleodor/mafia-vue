@@ -35,6 +35,11 @@ export default {
   name: 'HelloWorld',
   props: {
     msg: String
+  },
+  sockets: {
+    connect: function () {
+      console.log('socket connected')
+    }
   }
 }
 </script>
