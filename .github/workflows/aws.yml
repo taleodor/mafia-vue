@@ -51,7 +51,7 @@ jobs:
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: mafia-express
+        ECR_REPOSITORY: mafia-vue
       run: |
         # get version
         docker pull relizaio/reliza-go-client
