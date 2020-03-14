@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
     <router-view class="nofloat viewWrapper" :key="$route.fullPath" />
   </div>
 </template>
