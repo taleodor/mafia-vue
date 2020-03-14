@@ -13,7 +13,7 @@ Vue.use(BootstrapVue)
 
 Vue.use(new VueSocketIO({
   debug: true,
-  connection: 'http://localhost:8082',
+  connection: window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : ''),
   options: { path: "/api" } //Optional options
 }))
 
