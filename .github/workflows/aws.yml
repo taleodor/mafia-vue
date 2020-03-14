@@ -51,12 +51,11 @@ jobs:
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: mafia-vue
-        IMAGE_TAG: ${{ github.sha }}
+        ECR_REPOSITORY: mafia-express
       run: |
         # get version
         docker pull relizaio/reliza-go-client
-        docker run --rm relizaio/reliza-go-client getversion -k ${{ secrets.RELIZA_API_KEY }} -i ${{ secrets.RELIZA_API_ID }} -b master --metadata GitHub > full_version_output 2>&1
+        docker run --rm relizaio/reliza-go-client getversion -k ${{ secrets.RELIZA_API_KEY }} -i ${{ secrets.RELIZA_API_ID }} -b $GITHUB_REF --metadata GitHub > full_version_output 2>&1
         # show reliza command output in case there is error
         cat full_version_output
         # now construct actual version - we could use jq, but why install another tool in CI env?
