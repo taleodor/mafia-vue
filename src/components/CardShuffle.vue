@@ -8,6 +8,18 @@
             <li v-for="p in playerList" :key="p">{{ p }}</li>
         </ul>
     </div>
+    <div v-if="admin" class="adminBlock">
+        Game master section:
+        Cards distribution:
+        Scheriff: <b-input v-model="cards.scheriff" />
+        Villager: <b-input v-model="cards.villager" />
+        Mafia: <b-input v-model="cards.mafia" />
+        Godfather: <b-input v-model="cards.godfather" />
+        <b-button @click="shuffleCards">Shuffle Cards!</b-button>
+    </div>
+    <div class="cardBlock" v-if="mycard">
+        <h2>YOUR CARD: {{ mycard }}</h2>
+    </div>
     <b-input-group class="mt-3">
         <b-form @submit="submitName">
             <b-input-group class="mt-3">
@@ -32,17 +44,30 @@ export default {
     name: 'CardShuffle',
     data () {
         return {
+            admin: false,
             room: this.$route.params.room,
             playerName: '',
             alertCountDown: 0,
             alertMsg: '',
-            playerList: []
+            playerList: [],
+            cards: {
+                scheriff: 0,
+                godfather: 0,
+                mafia: 0,
+                villager: 0
+            },
+            mycard: ''
         }
     },
     props: {
         msg: String
     },
     sockets: {
+        cardassigned (card) {
+            this.alertMsg = 'You have been assigned the card: ' + card + '!'
+            this.alertCountDown = 5
+            this.mycard = card
+        },
         connect () {
             console.log('socket connected')
             this.requestRoom()
@@ -57,6 +82,11 @@ export default {
         },
         playerlist (list) {
             this.playerList = list
+        },
+        youareadmin () {
+            this.alertMsg = 'You are game master of this room!'
+            this.alertCountDown = 5
+            this.admin = true
         }
     },
     methods: {
@@ -65,6 +95,21 @@ export default {
         },
         requestRoom () {
             this.$socket.emit('requestroom', this.room)
+        },
+        shuffleCards () {
+            // count and validate
+            let cardNum = Number(this.cards.scheriff) + Number(this.cards.mafia) + Number(this.cards.godfather) + Number(this.cards.villager)
+            if (cardNum !== this.playerList.length) {
+                this.alertMsg = 'You allocated ' + cardNum + ' cards for ' + this.playerList.length + ' players! These numbers must be equal!'
+                this.alertCountDown = 5
+            } else {
+                // proceed with shuffle
+                let shuffleObj = {
+                    room: this.room,
+                    cards: this.cards
+                }
+                this.$socket.emit('shufflecards', shuffleObj)
+            }
         },
         submitName (e) {
             e.preventDefault()
