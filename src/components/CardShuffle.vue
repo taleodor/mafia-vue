@@ -106,7 +106,11 @@ export default {
             this.alertCountDown = alertCountDown
         },
         requestRoom () {
-            this.$socket.emit('requestroom', this.room)
+            let requestObj = {
+                room: this.room,
+                uuid: window.localStorage.getItem('mafiaUuid')
+            }
+            this.$socket.emit('requestroom', requestObj)
         },
         shuffleCards () {
             // count and validate
@@ -130,8 +134,10 @@ export default {
             e.preventDefault()
             let joinObject = {
                 room: this.room,
-                name: this.playerName
+                name: this.playerName,
+                uuid: window.localStorage.getItem('mafiaUuid')
             }
+            console.log(joinObject)
             this.$socket.emit('joinroom', joinObject)
         },
         updatePlayerOrder (order, player) {
