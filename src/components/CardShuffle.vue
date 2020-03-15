@@ -22,12 +22,16 @@
         Godfather: <b-input v-model="cards.godfather" />
         <b-button @click="shuffleCards">Shuffle Cards!</b-button>
     </div>
-    <div class="cardBlock" v-if="iPlayer.card">
-        <h2>YOUR CARD: {{ iPlayer.card }}</h2>
+    <div class="playerInfoBlock">
+        <h4 v-if="iPlayer && Object.keys(iPlayer).length && !iPlayer.card">You have joined this room as <strong>{{iPlayer.name}}</strong></h4>
+        <div class="cardBlock" v-if="iPlayer.card">
+            <h4>You have joined this room as <strong>{{iPlayer.name}}</strong>, your card:</h4>
+            <img class="cardImage" :src="cardImage" :title="iPlayer.card" :alt="'Your card: ' + iPlayer.card"/>
+            <h4>{{ iPlayer.card }}</h4>
+        </div>
     </div>
     <div class="joinRenameGroup">
-        <div v-if="iPlayer && Object.keys(iPlayer).length">You have joined this room as <strong>{{iPlayer.name}}</strong></div>
-        <div v-else>Enter your name and hit "Submit" to join this room</div>
+        <div v-if="!iPlayer || !Object.keys(iPlayer).length">Enter your name and hit "Submit" to join this room</div>
         <b-container>
             <b-row class="justify-content-md-center">
                     <b-col>
@@ -69,7 +73,8 @@ export default {
                 godfather: 0,
                 mafia: 0,
                 villager: 0
-            }
+            },
+            imagePrefix: 'https://d7ge14utcyki8.cloudfront.net/mafia/'
         }
     },
     props: {
@@ -179,6 +184,23 @@ export default {
             }
             this.$socket.emit('updateorder', updOrderObj)
         }
+    },
+    computed: {
+        cardImage () {
+            let cardImage = ''
+            if (this.iPlayer && this.iPlayer.card) {
+                let maxNumImage = {
+                    godfather: 1,
+                    sheriff: 1,
+                    mafia: 3,
+                    villager: 14
+                }
+                // random image postfix
+                let imagePostfix = 1 + Math.floor(Math.random() * maxNumImage[this.iPlayer.card])
+                cardImage = this.imagePrefix + this.iPlayer.card + String(imagePostfix) + '.jpg'
+            }
+            return cardImage
+        }
     }
 }
 </script>
@@ -186,7 +208,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h3 {
-  margin: 40px 0 0;
+  margin: 30px 0 0;
 }
 ul {
   list-style-type: none;
@@ -201,5 +223,8 @@ a {
 }
 .joinRenameGroup {
     margin-top: 50px;
+}
+.cardImage {
+    max-height: 300px;
 }
 </style>
