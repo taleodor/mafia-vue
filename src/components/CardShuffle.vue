@@ -195,7 +195,7 @@ export default {
                     godfather: 1,
                     sheriff: 1,
                     mafia: 3,
-                    villager: 14
+                    villager: 15
                 }
                 // random image postfix
                 let imagePostfix = 1 + Math.floor(Math.random() * maxNumImage[this.iPlayer.card])
