@@ -15,7 +15,7 @@
     </div>
     <b-button v-if="admin" @click="shuffleOrder">Shuffle Player Order!</b-button>
     <div v-if="admin" class="adminBlock">
-        <h5>Cards distribution (only game master sees this):</h5>
+        <h5>Card distribution (only game master sees this):</h5>
         Scheriff: <b-input v-model="cards.scheriff" />
         Villager: <b-input v-model="cards.villager" />
         Mafia: <b-input v-model="cards.mafia" />
@@ -25,16 +25,24 @@
     <div class="cardBlock" v-if="mycard">
         <h2>YOUR CARD: {{ mycard }}</h2>
     </div>
-    <b-input-group class="mt-3">
-        <b-form @submit="submitName">
-            <b-input-group class="mt-3">
-                <b-form-input id="enter-name-input" v-model="playerName" placeholder="Enter your name" />
-                <b-input-group-append>
-                    <b-button variant="info" @click="submitName">Submit</b-button>
-                </b-input-group-append>
-            </b-input-group>
-        </b-form>
-    </b-input-group>
+    <div class="joinRenameGroup">
+        <div v-if="iPlayer">You have joined this room as <strong>{{iPlayer.name}}</strong></div>
+        <div v-else>Enter your name and hit "Submit" to join this room</div>
+        <b-container>
+            <b-row class="justify-content-md-center">
+                    <b-col>
+                        <b-form @submit="submitName">
+                            <b-input-group class="mt-3">
+                                <b-form-input id="enter-name-input" v-model="playerName" :placeholder="iPlayer ? 'You may update your name here' : 'Enter your name to join this room'" />
+                                <b-input-group-append>
+                                    <b-button variant="info" @click="submitName">Submit</b-button>
+                                </b-input-group-append>
+                            </b-input-group>
+                        </b-form>
+                    </b-col>
+            </b-row>
+        </b-container>
+    </div>
     <b-alert
       :show="alertCountDown"
       dismissible
@@ -160,6 +168,12 @@ export default {
             }
             this.$socket.emit('updateorder', updOrderObj)
         }
+    },
+    computed: {
+        iPlayer () {
+            let myuuid = window.localStorage.getItem('mafiaUuid')
+            return this.playerList.find(p => (p.uuid === myuuid))
+        }
     }
 }
 </script>
@@ -179,5 +193,8 @@ li {
 }
 a {
   color: #42b983;
+}
+.joinRenameGroup {
+    margin-top: 50px;
 }
 </style>
