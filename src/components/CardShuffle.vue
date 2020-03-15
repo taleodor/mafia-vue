@@ -26,7 +26,7 @@
         <h2>YOUR CARD: {{ mycard }}</h2>
     </div>
     <div class="joinRenameGroup">
-        <div v-if="iPlayer">You have joined this room as <strong>{{iPlayer.name}}</strong></div>
+        <div v-if="iPlayer && Object.keys(iPlayer).length">You have joined this room as <strong>{{iPlayer.name}}</strong></div>
         <div v-else>Enter your name and hit "Submit" to join this room</div>
         <b-container>
             <b-row class="justify-content-md-center">
@@ -58,6 +58,7 @@ export default {
     data () {
         return {
             admin: false,
+            iPlayer: {},
             room: this.$route.params.room,
             playerName: '',
             alertCountDown: 0,
@@ -99,6 +100,11 @@ export default {
         },
         playerlist (list) {
             this.playerList = list
+            let requestObj = {
+                uuid: window.localStorage.getItem('mafiaUuid'),
+                room: this.room
+            }
+            this.$socket.emit('requestmyplayer', requestObj)
         },
         orderchanged (player) {
             this.alertMsg = 'Game master changed order number of player ' + player.name + ' to ' + player.order
@@ -112,6 +118,9 @@ export default {
             this.alertMsg = 'You are game master of this room!'
             this.alertCountDown = 5
             this.admin = true
+        },
+        yourplayer (resp) {
+            this.iPlayer = resp
         }
     },
     methods: {
@@ -167,12 +176,6 @@ export default {
                 order: order
             }
             this.$socket.emit('updateorder', updOrderObj)
-        }
-    },
-    computed: {
-        iPlayer () {
-            let myuuid = window.localStorage.getItem('mafiaUuid')
-            return this.playerList.find(p => (p.uuid === myuuid))
         }
     }
 }
