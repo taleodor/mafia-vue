@@ -9,6 +9,7 @@
                 <b-dropdown v-if="admin" :text="String(p.order)">
                     <b-dropdown-item v-for="i in [1,2,3,4,5,6,7,8,9,10]" :key="i" @click="updatePlayerOrder(i, p.name)">{{ i }}</b-dropdown-item>
                 </b-dropdown>
+                <a href="#" v-if="admin" @click="kickPlayer(p.name)"> x</a>
             </li>
         </ul>
     </div>
@@ -67,6 +68,10 @@ export default {
         msg: String
     },
     sockets: {
+        adminmsg (msg) {
+            this.alertMsg = msg
+            this.alertCountDown = 5
+        },
         cardassigned (card) {
             this.alertMsg = 'You have been assigned a card: ' + card + '!'
             this.alertCountDown = 5
@@ -104,6 +109,13 @@ export default {
     methods: {
         alertCountDownChanged (alertCountDown) {
             this.alertCountDown = alertCountDown
+        },
+        kickPlayer (name) {
+            let kickobj = {
+                room: this.room,
+                name: name
+            }
+            this.$socket.emit('kickplayer', kickobj)
         },
         requestRoom () {
             let requestObj = {
