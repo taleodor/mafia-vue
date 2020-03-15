@@ -37,7 +37,9 @@
                     <b-col>
                         <b-form @submit="submitName">
                             <b-input-group class="mt-3">
-                                <b-form-input id="enter-name-input" v-model="playerName" :placeholder="iPlayer ? 'You may update your name here' : 'Enter your name to join this room'" />
+                                <b-form-input id="enter-name-input"
+                                            v-model="playerName"
+                                            :placeholder="(iPlayer && iPlayer.name) ? 'You may update your name here' : 'Enter your name to join this room'" />
                                 <b-input-group-append>
                                     <b-button variant="info" @click="submitName">Submit</b-button>
                                 </b-input-group-append>
