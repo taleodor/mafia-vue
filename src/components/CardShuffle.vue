@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <h1>Card Shuffle, room {{ room }}</h1>
+    <h1>Welcome to the room "{{ room }}"</h1>
     <h3>Players in this room ({{ playerList.length }}):</h3>
     <div v-if="!playerList.length">No players yet</div>
     <div v-else>
@@ -15,15 +15,16 @@
     </div>
     <b-button v-if="admin" @click="shuffleOrder">Shuffle Player Order!</b-button>
     <div v-if="admin" class="adminBlock">
-        <h5>Card distribution (only game master sees this):</h5>
-        Sheriff: <b-input v-model="cards.sheriff" />
-        Villager: <b-input v-model="cards.villager" />
-        Mafia: <b-input v-model="cards.mafia" />
-        Godfather: <b-input v-model="cards.godfather" />
+        <h5 class="cardDistroStatus">Card distribution (only game master sees this):</h5>
+        <span class="cardType">Sheriff: <b-input class="cardDistroInput" v-model="cards.sheriff" /></span>
+        <span class="cardType">Villager: <b-input class="cardDistroInput" v-model="cards.villager" /></span>
+        <span class="cardType">Mafia: <b-input class="cardDistroInput" v-model="cards.mafia" /></span>
+        <span class="cardType">Godfather: <b-input class="cardDistroInput" v-model="cards.godfather" /></span>
         <b-button @click="shuffleCards">Shuffle Cards!</b-button>
+        <div class="cardDistroStatus">Distributed {{ distributedCards }} cards for {{ playerList.length }} players.</div>
     </div>
-    <div class="playerInfoBlock">
-        <h4 v-if="iPlayer && Object.keys(iPlayer).length && !iPlayer.card">You have joined this room as <strong>{{iPlayer.name}}</strong></h4>
+    <div class="playerInfoBlock" v-if="iPlayer">
+        <h4 v-if="Object.keys(iPlayer).length && !iPlayer.card">You have joined this room as <strong>{{iPlayer.name}}</strong></h4>
         <div class="cardBlock" v-if="iPlayer.card">
             <h4>You have joined this room as <strong>{{iPlayer.name}}</strong>, your card:</h4>
             <img class="cardImage" :src="cardImage" :title="iPlayer.card" :alt="'Your card: ' + iPlayer.card"/>
@@ -151,10 +152,9 @@ export default {
             this.$socket.emit('requestroom', requestObj)
         },
         shuffleCards () {
-            // count and validate
-            let cardNum = Number(this.cards.sheriff) + Number(this.cards.mafia) + Number(this.cards.godfather) + Number(this.cards.villager)
-            if (cardNum !== this.playerList.length) {
-                this.alertMsg = 'You allocated ' + cardNum + ' cards for ' + this.playerList.length + ' players! These numbers must be equal!'
+            // count and validate 
+            if (this.distributedCards !== this.playerList.length) {
+                this.alertMsg = 'You allocated ' + this.distributedCards + ' cards for ' + this.playerList.length + ' players! Numbers of cards and players must be equal!'
                 this.alertCountDown = 5
             } else {
                 // proceed with shuffle
@@ -187,6 +187,9 @@ export default {
             this.$socket.emit('updateorder', updOrderObj)
         }
     },
+    created () {
+        this.requestRoom()
+    },
     computed: {
         cardImage () {
             let cardImage = ''
@@ -202,6 +205,9 @@ export default {
                 cardImage = this.imagePrefix + this.iPlayer.card + String(imagePostfix) + '.jpg'
             }
             return cardImage
+        },
+        distributedCards () {
+            return Number(this.cards.sheriff) + Number(this.cards.mafia) + Number(this.cards.godfather) + Number(this.cards.villager)
         }
     }
 }
@@ -228,5 +234,16 @@ a {
 }
 .cardImage {
     max-height: 300px;
+}
+.cardDistroInput {
+    display: inline-block;
+    width: 70px
+}
+.cardDistroStatus {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.cardType {
+    margin-right: 20px;
 }
 </style>

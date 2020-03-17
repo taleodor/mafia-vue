@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Home from './components/Home.vue'
 import CardShuffle from './components/CardShuffle.vue'
 
 Vue.use(Router)
@@ -11,7 +12,7 @@ export default new Router({
         {
             path: '/',
             name: 'Home',
-            component: CardShuffle
+            component: Home
         },
         {
             path: '/cards/:room',

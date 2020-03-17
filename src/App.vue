@@ -20,6 +20,7 @@ export default {
         }
     },
     created () {
+        window.document.title = 'Mafia Card Shuffle'
         let existingUuid = window.localStorage.getItem('mafiaUuid')
         if (!existingUuid) {
             let uuid = this.uuidv4()
