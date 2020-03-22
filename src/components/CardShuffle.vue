@@ -26,7 +26,7 @@
     <div class="playerInfoBlock" v-if="iPlayer">
         <h4 v-if="Object.keys(iPlayer).length && !iPlayer.card">You have joined this room as <strong>{{iPlayer.name}}</strong></h4>
         <div class="cardBlock" v-if="iPlayer.card">
-            <h4>You have joined this room as <strong>{{iPlayer.name}}</strong>, your card:</h4>
+            <h4>You have joined this room as <strong>{{iPlayer.name}}</strong>, game <strong>#{{iPlayer.game}}</strong>, your card:</h4>
             <img class="cardImage" :src="cardImage" :title="iPlayer.card" :alt="'Your card: ' + iPlayer.card"/>
             <h4>{{ iPlayer.card }}</h4>
         </div>
