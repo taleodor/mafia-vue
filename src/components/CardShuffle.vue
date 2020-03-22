@@ -198,11 +198,12 @@ export default {
                     godfather: 1,
                     sheriff: 1,
                     mafia: 3,
-                    villager: 15
+                    villager: 29
                 }
                 // random image postfix
                 let imagePostfix = 1 + Math.floor(Math.random() * maxNumImage[this.iPlayer.card])
-                cardImage = this.imagePrefix + this.iPlayer.card + String(imagePostfix) + '.jpg'
+                let imageCardName = this.iPlayer.card === 'mafia' ? 'mafianew' : this.iPlayer.card
+                cardImage = this.imagePrefix + imageCardName + String(imagePostfix) + '.jpg'
             }
             return cardImage
         },
