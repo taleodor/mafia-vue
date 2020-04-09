@@ -1,0 +1,45 @@
+on: [push]
+
+name: Obtain version from Reliza, build and push to Docker Hub
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Login to Docker Registry
+        run: echo ${{ secrets.docker_token }} | docker login -u ${{ secrets.docker_login }} --password-stdin
+      - name: Build, push image, generate version and stream version to Reliza Hub
+        env:
+          IMAGE_NAMESPACE: taleodor
+          IMAGE_NAME: mafia-vue
+        run: |
+        # get version
+        docker pull relizaio/reliza-go-client
+        docker run --rm relizaio/reliza-go-client getversion -k ${{ secrets.RELIZA_API_KEY }} -i ${{ secrets.RELIZA_API_ID }} -b $GITHUB_REF --metadata GitHub > full_version_output 2>&1
+        # show reliza command output in case there is error
+        cat full_version_output
+        # now construct actual version - we could use jq, but why install another tool in CI env?
+        cat full_version_output | grep version | cut -d ':' -f 2 | cut -d '"' -f 2 > version
+        vvar=$(cat version)
+        # version without meta for docker registry
+        vvartag=$(cat version | cut -d '+' -f 1)
+        # Build a docker container and push it to Docker Hub
+        docker build -t $IMAGE_NAMESPACE/$IMAGE_NAME:$vvartag -t $IMAGE_NAMESPACE/$IMAGE_NAME:latest --build-arg VERSION=$vvar --build-arg CI_ENV=github$GITHUB_SHA \
+            --build-arg GIT_COMMIT=$GITHUB_SHA --build-arg GIT_BRANCH=$GITHUB_REF .
+        echo -n "--artid $IMAGE_NAMESPACE/$IMAGE_NAME " >> reliza_command
+        echo -n "--artbuildid github$GITHUB_ACTION$GITHUB_SHA " >> reliza_command
+        echo -n "--artcimeta GitHub Actions " >> reliza_command
+        echo -n "--arttype Docker " >> reliza_command
+        echo -n "--artdigests " >> reliza_command
+        echo -n $(docker push $IMAGE_NAMESPACE/$IMAGE_NAME:$vvartag | grep sha256 | cut -f 3 -d ' ') >> reliza_command
+        echo -n " " >> reliza_command
+        echo -n "-b $GITHUB_REF --vcstype git --commit $GITHUB_SHA -k ${{ secrets.RELIZA_API_KEY }} -i ${{ secrets.RELIZA_API_ID }} --vcsuri github.com/$GITHUB_REPOSITORY \
+            -v $vvar" >> reliza_command
+        cat reliza_command
+        # push latest also
+        docker push $IMAGE_NAMESPACE/$IMAGE_NAME:latest
+        docker run --rm relizaio/reliza-go-client addrelease $(cat reliza_command)
