@@ -12,12 +12,24 @@ export default new Router({
         {
             path: '/',
             name: 'Home',
-            component: Home
+            component: Home,
+            meta: {
+                title: 'Mafia Card Shuffle',
+                metaTags: [
+                    {
+                        name: 'description',
+                        content: 'Simple card shuffle app for Classic Mafia / Werewolf games'
+                    }
+                ]
+            }
         },
         {
             path: '/cards/:room',
             name: 'RoomShuffle',
-            component: CardShuffle
+            component: CardShuffle,
+            meta: {
+                title: 'Mafia Card Shuffle'
+            }
         }
     ]
 })

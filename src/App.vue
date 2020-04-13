@@ -1,15 +1,24 @@
 <template>
     <div id="app">
-        <router-view class="nofloat viewWrapper" :key="$route.fullPath" />
+        <github-button href="https://github.com/taleodor/mafia-deployment"
+                        class="giveUsAStar"
+                        data-icon="octicon-star"
+                        data-size="large"
+                        data-show-count="true"
+                        aria-label="Star taleodor/mafia-deployment on GitHub">
+            Star
+        </github-button>
+        <router-view class="nofloat viewWrapper removeFloat" :key="$route.fullPath" />
     </div>
 </template>
 
 <script>
+import GithubButton from 'vue-github-button'
 
 export default {
-      name: 'App',
-      components: {
-    
+    name: 'App',
+    components: {
+        GithubButton
     },
     methods: {
         uuidv4() {
@@ -37,6 +46,13 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 30px;
+}
+.giveUsAStar {
+    float: right;
+    margin-right: 10px;
+}
+.removeFloat {
+    clear: both;
 }
 </style>
