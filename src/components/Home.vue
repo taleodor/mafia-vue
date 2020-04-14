@@ -26,6 +26,11 @@
                     <b-button size="sm" variant="success" @click="generateRoom">Generate new room for me</b-button>
                 </b-col>
             </b-row>
+            <b-row class="mt-5 mb-3 justify-content-md-center">
+                <b-col>
+                    Powered by <a href="https://relizahub.com">Reliza Hub</a>
+                </b-col>
+            </b-row>
         </b-container>
     </div>
 </template>

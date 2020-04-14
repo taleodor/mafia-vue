@@ -1,5 +1,6 @@
 <template>
     <div id="app">
+        <div><router-link to="/"><img id="relizaLogo" src="/logo_svg_no_tag_3.svg" /></router-link></div>
         <github-button href="https://github.com/taleodor/mafia-deployment"
                         class="giveUsAStar"
                         data-icon="octicon-star"
@@ -54,5 +55,11 @@ export default {
 }
 .removeFloat {
     clear: both;
+}
+#relizaLogo {
+    float: left;
+    width: 85px;
+    margin-left: -20px;
+    margin-top: -10px;
 }
 </style>
