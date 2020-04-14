@@ -10,19 +10,25 @@
                     <b-dropdown-item v-for="i in computedOrderArray" :key="i" @click="updatePlayerOrder(i, p.name)">{{ i }}</b-dropdown-item>
                 </b-dropdown>
                 <span v-if="p.admin" title="Game Master"><b-icon-shield-shaded /></span>
-                <span v-if="p.order === blinkLink" title="Blink Accepted"><b-icon-bullseye /></span>
-                <span v-if="p.order === listenLink" title="Player saw your blink"><b-icon-eye /></span>
+                <span v-if="p.order === blinkLink" title="Player Saw You Blinking"><b-icon-bullseye /></span>
+                <span v-if="p.order === listenLink" title="Player Blinked To You"><b-icon-eye /></span>
                 <a href="#" v-if="admin" @click="kickPlayer(p.name)"> x</a>
             </li>
         </ul>
     </div>
+    <b-alert
+      :show="alertCountDown"
+      dismissible
+      @dismissed="alertCountDown=0"
+      @dismiss-count-down="alertCountDownChanged"
+    >{{ alertMsg }}</b-alert>
     <b-button v-if="admin" variant="success" @click="shuffleOrder">Shuffle Player Order!</b-button>
-    <span v-if="admin" class="transferAdmin ml-3">
+    <div v-if="admin" class="transferAdmin mt-3 ml-3">
         <span>Transfer Game Master To: </span>
         <b-dropdown text="Select Player">
             <b-dropdown-item v-for="p in playerList" :key="p.name" @click="transferAdmin(p.name)">{{ p.name }}</b-dropdown-item>
         </b-dropdown>
-    </span>
+    </div>
     <div v-if="admin" class="adminBlock">
         <h5 class="cardDistroStatus">Card distribution (only game master sees this):</h5>
         <span class="cardType">Sheriff: <b-input class="cardDistroInput" v-model="cards.sheriff" /></span>
@@ -65,12 +71,6 @@
             </b-row>
         </b-container>
     </div>
-    <b-alert
-      :show="alertCountDown"
-      dismissible
-      @dismissed="alertCountDown=0"
-      @dismiss-count-down="alertCountDownChanged"
-    >{{ alertMsg }}</b-alert>
   </div>
 </template>
 
