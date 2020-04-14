@@ -5,11 +5,13 @@
     <div v-if="!playerList.length">No players yet</div>
     <div v-else>
         <ul>
-            <li v-for="p in playerList" :key="p.name"><span v-if="!admin">{{ p.order }}.</span> {{ p.name }}
+            <li v-for="p in playerList" :key="p.name"><span class="clickable" @click="listenTo(p.order)"><span v-if="!admin">{{ p.order }}.</span>{{ p.name }} </span>
                 <b-dropdown v-if="admin" :text="String(p.order)">
                     <b-dropdown-item v-for="i in computedOrderArray" :key="i" @click="updatePlayerOrder(i, p.name)">{{ i }}</b-dropdown-item>
                 </b-dropdown>
                 <span v-if="p.admin" title="Game Master"><b-icon-shield-shaded /></span>
+                <span v-if="p.order === blinkLink" title="Blink Accepted"><b-icon-bullseye /></span>
+                <span v-if="p.order === listenLink" title="Player saw your blink"><b-icon-eye /></span>
                 <a href="#" v-if="admin" @click="kickPlayer(p.name)"> x</a>
             </li>
         </ul>
@@ -28,9 +30,15 @@
         <span class="cardType">Mafia: <b-input class="cardDistroInput" v-model="cards.mafia" /></span>
         <span class="cardType">Godfather: <b-input class="cardDistroInput" v-model="cards.godfather" /></span>
         <b-button variant="success" @click="shuffleCards">Shuffle Cards!</b-button>
-        <div class="cardDistroStatus">Distributed {{ distributedCards }} cards for {{ numberOfPlayersInGame }} players.</div>
+        <div class="cardDistroStatus">Distributed {{ distributedCards }} cards for {{ playersInGame.length }} players.</div>
     </div>
-    <div class="playerInfoBlock" v-if="iPlayer">
+    <div class="playerInfoBlock" v-if="iPlayer && game > 0 && game === iPlayer.game">
+        <div class="blinkTo">
+            <span>Game {{ game }} - Blink To: </span>
+            <b-dropdown text="Select Player To Blink">
+                <b-dropdown-item v-for="p in playersInGame" :key="p.name" @click="blinkTo(p.order)">{{ p.order }}</b-dropdown-item>
+            </b-dropdown>
+        </div>
         <h4 v-if="Object.keys(iPlayer).length && !iPlayer.card">You have joined this room as <strong>{{iPlayer.name}}</strong></h4>
         <div class="cardBlock" v-if="iPlayer.card">
             <h4>You have joined this room as <strong>{{iPlayer.name}}</strong>, game <strong>#{{iPlayer.game}}</strong>, your card:</h4>
@@ -72,7 +80,10 @@ export default {
     data () {
         return {
             admin: false,
+            blinkLink: -1,
+            game: 0,
             iPlayer: {},
+            listenLink: -1,
             room: this.$route.params.room,
             playerName: '',
             alertCountDown: 0,
@@ -95,6 +106,9 @@ export default {
             this.alertMsg = msg
             this.alertCountDown = 5
         },
+        blinksuccess (order) {
+            this.blinkLink = order
+        },
         cardassigned (card) {
             this.alertMsg = 'You have been assigned a card: ' + card + '!'
             this.alertCountDown = 5
@@ -104,9 +118,15 @@ export default {
             console.log('socket connected')
             this.requestRoom()
         },
+        gamenumber (game) {
+            this.game = game
+        },
         joinedroom (name) {
             this.alertMsg = name + ' joined this game room!'
             this.alertCountDown = 5
+        },
+        listensuccess (order) {
+            this.listenLink = order
         },
         nametaken () {
             this.alertMsg = 'Sorry, this name has already been taken!'
@@ -132,11 +152,26 @@ export default {
         yourplayer (resp) {
             this.iPlayer = resp
             this.admin = resp.admin
+            this.game = resp.game
         }
     },
     methods: {
         alertCountDownChanged (alertCountDown) {
             this.alertCountDown = alertCountDown
+        },
+        listenTo (order) {
+            let listObj = {
+                room: this.room,
+                listenTarget: order
+            }
+            this.$socket.emit('listenTo', listObj)
+        },
+        blinkTo (order) {
+            let blinkObj = {
+                room: this.room,
+                blinkTarget: order
+            }
+            this.$socket.emit('blinkTo', blinkObj)
         },
         kickPlayer (name) {
             let kickobj = {
@@ -161,8 +196,8 @@ export default {
         },
         shuffleCards () {
             // count and validate 
-            if (this.distributedCards !== this.numberOfPlayersInGame) {
-                this.alertMsg = 'You allocated ' + this.distributedCards + ' cards for ' + this.numberOfPlayersInGame + ' players! Numbers of cards and players must be equal!'
+            if (this.distributedCards !== this.playersInGame.length) {
+                this.alertMsg = 'You allocated ' + this.distributedCards + ' cards for ' + this.playersInGame.length + ' players! Numbers of cards and players must be equal!'
                 this.alertCountDown = 5
             } else {
                 // proceed with shuffle
@@ -209,6 +244,12 @@ export default {
     created () {
         this.requestRoom()
     },
+    watch: {
+        game () {
+            this.blinkLink = -1
+            this.listenLink = -1
+        }
+    },
     computed: {
         cardImage () {
             let cardImage = ''
@@ -234,14 +275,14 @@ export default {
             orderList.push('Guest')
             return orderList
         },
-        numberOfPlayersInGame () {
-            let num = 0
+        playersInGame () {
+            let playersInGame = []
             this.playerList.forEach(p => {
                 if (p.order !== 'Host' && p.order !== 'Guest') {
-                    num++
+                    playersInGame.push(p)
                 }
             })
-            return num
+            return playersInGame
         },
         distributedCards () {
             return Number(this.cards.sheriff) + Number(this.cards.mafia) + Number(this.cards.godfather) + Number(this.cards.villager)
@@ -282,5 +323,8 @@ a {
 }
 .cardType {
     margin-right: 20px;
+}
+.clickable {
+    cursor: pointer;
 }
 </style>
