@@ -1,24 +1,9 @@
-# vue-mafia
+# Mafia Card Shuffle Vue UI
 
-## Project setup
-```
-npm install
-```
+This is a UI Vue.js project for Mafia Card Shuffle (simple card and player order shuffle for a classic Mafia game). You can find deployed project at [https://mafia.brolia.com](https://mafia.brolia.com).
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+For details on deployment, please refer to [mafia deployment project](https://github.com/taleodor/mafia-deployment).
 
-### Compiles and minifies for production
-```
-npm run build
-```
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+# Other
+Any contributions are welcome!
