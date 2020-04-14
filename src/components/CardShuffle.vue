@@ -14,14 +14,20 @@
             </li>
         </ul>
     </div>
-    <b-button v-if="admin" @click="shuffleOrder">Shuffle Player Order!</b-button>
+    <b-button v-if="admin" variant="success" @click="shuffleOrder">Shuffle Player Order!</b-button>
+    <span v-if="admin" class="transferAdmin ml-3">
+        <span>Transfer Game Master To: </span>
+        <b-dropdown text="Select Player">
+            <b-dropdown-item v-for="p in playerList" :key="p.name" @click="transferAdmin(p.name)">{{ p.name }}</b-dropdown-item>
+        </b-dropdown>
+    </span>
     <div v-if="admin" class="adminBlock">
         <h5 class="cardDistroStatus">Card distribution (only game master sees this):</h5>
         <span class="cardType">Sheriff: <b-input class="cardDistroInput" v-model="cards.sheriff" /></span>
         <span class="cardType">Villager: <b-input class="cardDistroInput" v-model="cards.villager" /></span>
         <span class="cardType">Mafia: <b-input class="cardDistroInput" v-model="cards.mafia" /></span>
         <span class="cardType">Godfather: <b-input class="cardDistroInput" v-model="cards.godfather" /></span>
-        <b-button @click="shuffleCards">Shuffle Cards!</b-button>
+        <b-button variant="success" @click="shuffleCards">Shuffle Cards!</b-button>
         <div class="cardDistroStatus">Distributed {{ distributedCards }} cards for {{ numberOfPlayersInGame }} players.</div>
     </div>
     <div class="playerInfoBlock" v-if="iPlayer">
@@ -125,6 +131,7 @@ export default {
         },
         yourplayer (resp) {
             this.iPlayer = resp
+            this.admin = resp.admin
         }
     },
     methods: {
@@ -178,6 +185,17 @@ export default {
             }
             console.log(joinObject)
             this.$socket.emit('joinroom', joinObject)
+        },
+        transferAdmin (name) {
+            let requestObj = {
+                room: this.room,
+                name: name
+            }
+            this.$socket.emit('transferGameMaster', requestObj)
+            setTimeout(() => {
+                console.log('timeout')
+                this.requestMyPlayer()
+            }, 1000)
         },
         updatePlayerOrder (order, player) {
             let updOrderObj = {
