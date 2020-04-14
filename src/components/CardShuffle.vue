@@ -5,10 +5,11 @@
     <div v-if="!playerList.length">No players yet</div>
     <div v-else>
         <ul>
-            <li v-for="p in playerList" :key="p.name">{{ p.name }} <span v-if="!admin">#{{ p.order }}</span>
+            <li v-for="p in playerList" :key="p.name"><span v-if="!admin">{{ p.order }}.</span> {{ p.name }}
                 <b-dropdown v-if="admin" :text="String(p.order)">
                     <b-dropdown-item v-for="i in [1,2,3,4,5,6,7,8,9,10]" :key="i" @click="updatePlayerOrder(i, p.name)">{{ i }}</b-dropdown-item>
                 </b-dropdown>
+                <span v-if="p.admin" title="Game Master"><b-icon-shield-shaded /></span>
                 <a href="#" v-if="admin" @click="kickPlayer(p.name)"> x</a>
             </li>
         </ul>
