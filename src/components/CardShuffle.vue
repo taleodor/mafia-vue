@@ -73,10 +73,10 @@ export default {
             alertMsg: '',
             playerList: [],
             cards: {
-                sheriff: 0,
-                godfather: 0,
-                mafia: 0,
-                villager: 0
+                sheriff: 1,
+                godfather: 1,
+                mafia: 2,
+                villager: 6
             },
             imagePrefix: 'https://d7ge14utcyki8.cloudfront.net/mafia/'
         }
