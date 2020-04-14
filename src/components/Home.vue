@@ -16,6 +16,12 @@
                     </b-form>
                 </b-col>
             </b-row>
+            <b-row class="mt-3 mb-3 justify-content-md-center">
+                OR
+            </b-row>
+            <b-row class="justify-content-md-center">
+                <b-button size="sm" variant="success" @click="generateRoom">Generate new room for me</b-button>
+            </b-row>
         </b-container>
     </div>
 </template>
@@ -32,6 +38,13 @@ export default {
         msg: String
     },
     methods: {
+        generateRoom () {
+            this.room = 'xxxxxx'.replace(/[xy]/g, function(c) {
+                let r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8)
+                return v.toString(16)
+            })
+            this.submitRoom()
+        },
         submitRoom () {
             this.$router.push({ name: 'RoomShuffle', params: { room: this.room } })
         }
