@@ -17,10 +17,14 @@
                 </b-col>
             </b-row>
             <b-row class="mt-3 mb-3 justify-content-md-center">
-                OR
+                <b-col>
+                    OR
+                </b-col>
             </b-row>
             <b-row class="justify-content-md-center">
-                <b-button size="sm" variant="success" @click="generateRoom">Generate new room for me</b-button>
+                <b-col>
+                    <b-button size="sm" variant="success" @click="generateRoom">Generate new room for me</b-button>
+                </b-col>
             </b-row>
         </b-container>
     </div>
