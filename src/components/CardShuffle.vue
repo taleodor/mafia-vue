@@ -7,7 +7,7 @@
         <ul>
             <li v-for="p in playerList" :key="p.name"><span v-if="!admin">{{ p.order }}.</span> {{ p.name }}
                 <b-dropdown v-if="admin" :text="String(p.order)">
-                    <b-dropdown-item v-for="i in [1,2,3,4,5,6,7,8,9,10]" :key="i" @click="updatePlayerOrder(i, p.name)">{{ i }}</b-dropdown-item>
+                    <b-dropdown-item v-for="i in computedOrderArray" :key="i" @click="updatePlayerOrder(i, p.name)">{{ i }}</b-dropdown-item>
                 </b-dropdown>
                 <span v-if="p.admin" title="Game Master"><b-icon-shield-shaded /></span>
                 <a href="#" v-if="admin" @click="kickPlayer(p.name)"> x</a>
@@ -207,6 +207,14 @@ export default {
                 cardImage = this.imagePrefix + imageCardName + String(imagePostfix) + '.jpg'
             }
             return cardImage
+        },
+        computedOrderArray () {
+            let orderList = [...Array(this.playerList.length).keys()]
+            orderList.shift()
+            orderList.push(this.playerList.length)
+            orderList.push('Host')
+            orderList.push('Guest')
+            return orderList
         },
         distributedCards () {
             return Number(this.cards.sheriff) + Number(this.cards.mafia) + Number(this.cards.godfather) + Number(this.cards.villager)
