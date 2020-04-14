@@ -22,7 +22,7 @@
         <span class="cardType">Mafia: <b-input class="cardDistroInput" v-model="cards.mafia" /></span>
         <span class="cardType">Godfather: <b-input class="cardDistroInput" v-model="cards.godfather" /></span>
         <b-button @click="shuffleCards">Shuffle Cards!</b-button>
-        <div class="cardDistroStatus">Distributed {{ distributedCards }} cards for {{ playerList.length }} players.</div>
+        <div class="cardDistroStatus">Distributed {{ distributedCards }} cards for {{ numberOfPlayersInGame }} players.</div>
     </div>
     <div class="playerInfoBlock" v-if="iPlayer">
         <h4 v-if="Object.keys(iPlayer).length && !iPlayer.card">You have joined this room as <strong>{{iPlayer.name}}</strong></h4>
@@ -154,8 +154,8 @@ export default {
         },
         shuffleCards () {
             // count and validate 
-            if (this.distributedCards !== this.playerList.length) {
-                this.alertMsg = 'You allocated ' + this.distributedCards + ' cards for ' + this.playerList.length + ' players! Numbers of cards and players must be equal!'
+            if (this.distributedCards !== this.numberOfPlayersInGame) {
+                this.alertMsg = 'You allocated ' + this.distributedCards + ' cards for ' + this.numberOfPlayersInGame + ' players! Numbers of cards and players must be equal!'
                 this.alertCountDown = 5
             } else {
                 // proceed with shuffle
@@ -215,6 +215,15 @@ export default {
             orderList.push('Host')
             orderList.push('Guest')
             return orderList
+        },
+        numberOfPlayersInGame () {
+            let num = 0
+            this.playerList.forEach(p => {
+                if (p.order !== 'Host' && p.order !== 'Guest') {
+                    num++
+                }
+            })
+            return num
         },
         distributedCards () {
             return Number(this.cards.sheriff) + Number(this.cards.mafia) + Number(this.cards.godfather) + Number(this.cards.villager)
