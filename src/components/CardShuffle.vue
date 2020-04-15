@@ -10,8 +10,8 @@
                     <b-dropdown-item v-for="i in computedOrderArray" :key="i" @click="updatePlayerOrder(i, p.name)">{{ i }}</b-dropdown-item>
                 </b-dropdown>
                 <span v-if="p.admin" title="Game Master"><b-icon-shield-shaded /></span>
-                <span v-if="p.order === winkLink" title="Player Saw You Winking"><b-icon-bullseye /></span>
-                <span v-if="listenLink.includes(p.order)" title="Player Winked To You"><b-icon-eye /></span>
+                <span class="text-success" v-if="p.order === winkLink" title="Player Saw You Winking"><b-icon-bullseye /></span>
+                <span class="text-danger" v-if="listenLink.includes(p.order)" title="Player Winked To You"><b-icon-eye /></span>
                 <a href="#" v-if="admin" @click="kickPlayer(p.name)"> x</a>
             </li>
         </ul>
