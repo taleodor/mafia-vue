@@ -11,7 +11,7 @@
                 </b-dropdown>
                 <span v-if="p.admin" title="Game Master"><b-icon-shield-shaded /></span>
                 <span v-if="p.order === winkLink" title="Player Saw You Winking"><b-icon-bullseye /></span>
-                <span v-if="p.order === listenLink" title="Player Winked To You"><b-icon-eye /></span>
+                <span v-if="listenLink.includes(p.order)" title="Player Winked To You"><b-icon-eye /></span>
                 <a href="#" v-if="admin" @click="kickPlayer(p.name)"> x</a>
             </li>
         </ul>
@@ -83,7 +83,7 @@ export default {
             winkLink: -1,
             game: 0,
             iPlayer: {},
-            listenLink: -1,
+            listenLink: [],
             room: this.$route.params.room,
             playerName: '',
             alertCountDown: 0,
@@ -126,7 +126,7 @@ export default {
             this.alertCountDown = 5
         },
         listensuccess (order) {
-            this.listenLink = order
+            this.listenLink.push(order)
         },
         nametaken () {
             this.alertMsg = 'Sorry, this name has already been taken!'
@@ -249,7 +249,7 @@ export default {
     watch: {
         game () {
             this.winkLink = -1
-            this.listenLink = -1
+            this.listenLink = []
         }
     },
     computed: {
