@@ -10,8 +10,8 @@
                     <b-dropdown-item v-for="i in computedOrderArray" :key="i" @click="updatePlayerOrder(i, p.name)">{{ i }}</b-dropdown-item>
                 </b-dropdown>
                 <span v-if="p.admin" title="Game Master"><b-icon-shield-shaded /></span>
-                <span v-if="p.order === blinkLink" title="Player Saw You Blinking"><b-icon-bullseye /></span>
-                <span v-if="p.order === listenLink" title="Player Blinked To You"><b-icon-eye /></span>
+                <span v-if="p.order === winkLink" title="Player Saw You Winking"><b-icon-bullseye /></span>
+                <span v-if="p.order === listenLink" title="Player Winked To You"><b-icon-eye /></span>
                 <a href="#" v-if="admin" @click="kickPlayer(p.name)"> x</a>
             </li>
         </ul>
@@ -39,10 +39,10 @@
         <div class="cardDistroStatus">Distributed {{ distributedCards }} cards for {{ playersInGame.length }} players.</div>
     </div>
     <div class="playerInfoBlock" v-if="iPlayer && game > 0 && game === iPlayer.game">
-        <div class="blinkTo">
-            <span>Game {{ game }} - Blink To: </span>
-            <b-dropdown text="Select Player To Blink">
-                <b-dropdown-item v-for="p in playersInGame" :key="p.name" @click="blinkTo(p.order)">{{ p.order }}</b-dropdown-item>
+        <div class="winkTo">
+            <span>Game {{ game }} - Wink To: </span>
+            <b-dropdown text="Select Player To Wink">
+                <b-dropdown-item v-for="p in playersInGame" :key="p.name" @click="winkTo(p.order)">{{ p.order }}</b-dropdown-item>
             </b-dropdown>
         </div>
         <h4 v-if="Object.keys(iPlayer).length && !iPlayer.card">You have joined this room as <strong>{{iPlayer.name}}</strong></h4>
@@ -80,7 +80,7 @@ export default {
     data () {
         return {
             admin: false,
-            blinkLink: -1,
+            winkLink: -1,
             game: 0,
             iPlayer: {},
             listenLink: -1,
@@ -106,8 +106,8 @@ export default {
             this.alertMsg = msg
             this.alertCountDown = 5
         },
-        blinksuccess (order) {
-            this.blinkLink = order
+        winksuccess (order) {
+            this.winkLink = order
         },
         cardassigned (card) {
             this.alertMsg = 'You have been assigned a card: ' + card + '!'
@@ -168,12 +168,12 @@ export default {
             }
             this.$socket.emit('listenTo', listObj)
         },
-        blinkTo (order) {
-            let blinkObj = {
+        winkTo (order) {
+            let winkObj = {
                 room: this.room,
-                blinkTarget: order
+                winkTarget: order
             }
-            this.$socket.emit('blinkTo', blinkObj)
+            this.$socket.emit('winkTo', winkObj)
         },
         kickPlayer (name) {
             let kickobj = {
@@ -248,7 +248,7 @@ export default {
     },
     watch: {
         game () {
-            this.blinkLink = -1
+            this.winkLink = -1
             this.listenLink = -1
         }
     },
