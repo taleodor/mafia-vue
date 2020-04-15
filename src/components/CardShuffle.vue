@@ -151,8 +151,10 @@ export default {
         },
         yourplayer (resp) {
             this.iPlayer = resp
-            this.admin = resp.admin
-            this.game = resp.game
+            if (resp) {
+                this.admin = resp.admin
+                this.game = resp.game
+            }
         }
     },
     methods: {
