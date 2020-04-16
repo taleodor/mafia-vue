@@ -31,12 +31,31 @@
     </div>
     <div v-if="admin" class="adminBlock">
         <h5 class="cardDistroStatus">Card distribution (only game master sees this):</h5>
-        <span class="cardType">Sheriff: <b-input class="cardDistroInput" v-model="cards.sheriff" /></span>
-        <span class="cardType">Villager: <b-input class="cardDistroInput" v-model="cards.villager" /></span>
-        <span class="cardType">Mafia: <b-input class="cardDistroInput" v-model="cards.mafia" /></span>
-        <span class="cardType">Godfather: <b-input class="cardDistroInput" v-model="cards.godfather" /></span>
+        <span v-for="gamecard in Object.keys(cards)" :key="gamecard" class="cardType">{{ gamecard }}: <b-input class="cardDistroInput" v-model='cards[gamecard]' /></span>
+        <span class="h1 mr-3 clickable" v-b-modal.modal-add-custom-role title="Add Custom Role"><b-icon-plus-circle /></span>
         <b-button variant="success" @click="shuffleCards">Shuffle Cards!</b-button>
         <div class="cardDistroStatus">Distributed {{ distributedCards }} cards for {{ playersInGame.length }} players.</div>
+        <b-modal
+            ref="modal-add-custom-role"
+            id="modal-add-custom-role"
+            title="Add Custom Role"
+            :hide-footer="true"
+            >
+            <b-form @submit="addRoleSubmit">
+                <b-form-group   id="add_custom_role_input_group"
+                                label="Role"
+                                label-for="add_custom_role_input"
+                                description="Name your custom role">
+                    <b-form-input
+                                id ="add_custom_role_input"
+                                v-model="customRole"
+                                required
+                                placeholder="Enter Custom Role" />
+                </b-form-group>
+                <b-button type="submit" variant="primary">Submit</b-button>
+                <b-button type="reset" variant="danger">Reset</b-button>
+            </b-form>
+        </b-modal>
     </div>
     <div class="playerInfoBlock" v-if="iPlayer && game > 0 && game === iPlayer.game">
         <div class="winkTo">
@@ -80,6 +99,7 @@ export default {
     data () {
         return {
             admin: false,
+            customRole: '',
             winkLink: -1,
             game: 0,
             iPlayer: {},
@@ -95,6 +115,7 @@ export default {
                 mafia: 2,
                 villager: 6
             },
+            cardsWithImages: ['sheriff', 'godfather', 'mafia', 'villager'],
             imagePrefix: 'https://d7ge14utcyki8.cloudfront.net/mafia/'
         }
     },
@@ -158,6 +179,13 @@ export default {
         }
     },
     methods: {
+        addRoleSubmit (e) {
+            e.preventDefault()
+            this.cards[this.customRole] = 1
+            this.cards = Object.assign({}, this.cards) // needed for computed property to refresh
+            this.$refs['modal-add-custom-role'].hide()
+            this.customRole = ''
+        },
         alertCountDownChanged (alertCountDown) {
             this.alertCountDown = alertCountDown
         },
@@ -255,7 +283,7 @@ export default {
     computed: {
         cardImage () {
             let cardImage = ''
-            if (this.iPlayer && this.iPlayer.card) {
+            if (this.iPlayer && this.iPlayer.card && this.cardsWithImages.includes(this.iPlayer.card)) {
                 let maxNumImage = {
                     godfather: 1,
                     sheriff: 1,
@@ -287,7 +315,11 @@ export default {
             return playersInGame
         },
         distributedCards () {
-            return Number(this.cards.sheriff) + Number(this.cards.mafia) + Number(this.cards.godfather) + Number(this.cards.villager)
+            let numCards = 0
+            Object.values(this.cards).forEach(val => {
+                numCards += Number(val)
+            })
+            return numCards
         }
     }
 }
