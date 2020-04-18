@@ -11,7 +11,7 @@
                                           required
                                           placeholder="Enter room name to join or create" />
                             <b-input-group-append>
-                                <b-button variant="info" @click="submitRoom">Submit</b-button>
+                                <b-button variant="info" type="submit">Submit</b-button>
                             </b-input-group-append>
                         </b-input-group>
                     </b-form>

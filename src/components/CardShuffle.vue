@@ -83,7 +83,7 @@
                                             v-model="playerName"
                                             :placeholder="(iPlayer && iPlayer.name) ? 'You may update your name here' : 'Enter your name to join this room'" />
                                 <b-input-group-append>
-                                    <b-button variant="info" @click="submitName">Submit</b-button>
+                                    <b-button variant="info" type="submit">Submit</b-button>
                                 </b-input-group-append>
                             </b-input-group>
                         </b-form>
