@@ -8,6 +8,7 @@
                         <b-input-group class="mt-3">
                             <b-form-input id="enter-room"
                                           v-model="room"
+                                          required
                                           placeholder="Enter room name to join or create" />
                             <b-input-group-append>
                                 <b-button variant="info" @click="submitRoom">Submit</b-button>
