@@ -129,7 +129,9 @@ export default {
             this.alertCountDown = 5
         },
         winksuccess (order) {
-            this.winkLink.push(order)
+            if (!this.winkLink.includes(order)) {
+                this.winkLink.push(order)
+            }
         },
         cardassigned (card) {
             this.alertMsg = 'You have been assigned a card: ' + card + '!'
@@ -148,7 +150,9 @@ export default {
             this.alertCountDown = 5
         },
         listensuccess (order) {
-            this.listenLink.push(order)
+            if (!this.listenLink.includes(order)) {
+                this.listenLink.push(order)
+            }
         },
         nametaken () {
             this.alertMsg = 'Sorry, this name has already been taken!'
