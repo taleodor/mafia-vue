@@ -10,7 +10,7 @@
                     <b-dropdown-item v-for="i in computedOrderArray" :key="i" @click="updatePlayerOrder(i, p.name)">{{ i }}</b-dropdown-item>
                 </b-dropdown>
                 <span v-if="p.admin" title="Game Master"><b-icon-shield-shaded /></span>
-                <span class="text-success" v-if="p.order === winkLink" title="Player Saw You Winking"><b-icon-bullseye /></span>
+                <span class="text-success" v-if="winkLink.includes(p.order)" title="Player Saw You Winking"><b-icon-bullseye /></span>
                 <span class="text-danger" v-if="listenLink.includes(p.order)" title="Player Winked To You"><b-icon-eye /></span>
                 <a href="#" v-if="admin" @click="kickPlayer(p.name)"> x</a>
             </li>
@@ -101,7 +101,7 @@ export default {
         return {
             admin: false,
             customRole: '',
-            winkLink: -1,
+            winkLink: [],
             game: 0,
             iPlayer: {},
             listenLink: [],
@@ -129,7 +129,7 @@ export default {
             this.alertCountDown = 5
         },
         winksuccess (order) {
-            this.winkLink = order
+            this.winkLink.push(order)
         },
         cardassigned (card) {
             this.alertMsg = 'You have been assigned a card: ' + card + '!'
@@ -277,7 +277,7 @@ export default {
     },
     watch: {
         game () {
-            this.winkLink = -1
+            this.winkLink = []
             this.listenLink = []
         }
     },
