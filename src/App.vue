@@ -1,27 +1,14 @@
 <template>
     <div id="app">
         <div><router-link to="/"><img id="relizaLogo" src="/logo_svg_no_tag_3.svg" /></router-link></div>
-        <span class="giveUsAStar">
-            <a href="https://twitter.com/share?ref_src=twsrc%5Etfw"
-                            class="twitter-share-button"
-                            data-size="large"
-                            data-url="https://mafia.brolia.com"
-                            data-via="taleodor"
-                            data-hashtags="ClassicMafia"
-                            data-related=""
-                            data-lang="en"
-                            data-show-count="true">
-                Tweet
-            </a>
-            <github-button href="https://github.com/taleodor/mafia-deployment"
-                            class="ml-2"
-                            data-icon="octicon-star"
-                            data-size="large"
-                            data-show-count="true"
-                            aria-label="Star taleodor/mafia-deployment on GitHub">
-                Star
-            </github-button>
-        </span>
+        <github-button href="https://github.com/taleodor/mafia-deployment"
+                        class="giveUsAStar"
+                        data-icon="octicon-star"
+                        data-size="large"
+                        data-show-count="true"
+                        aria-label="Star taleodor/mafia-deployment on GitHub">
+            Star
+        </github-button>
         <router-view class="nofloat viewWrapper removeFloat" :key="$route.fullPath" />
     </div>
 </template>
@@ -49,13 +36,6 @@ export default {
             let uuid = this.uuidv4()
             window.localStorage.setItem('mafiaUuid', uuid)
         }
-    },
-    mounted () {
-        let twitterScript = document.createElement('script')
-        twitterScript.setAttribute('src', 'https://platform.twitter.com/widgets.js')
-        twitterScript.setAttribute('async', 'true')
-        twitterScript.setAttribute('charset', 'utf-8')
-        document.head.appendChild(twitterScript)
     }
 }
 </script>
