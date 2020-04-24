@@ -59,6 +59,7 @@
     </div>
     <div class="playerInfoBlock" v-if="iPlayer && game > 0 && game === iPlayer.game">
         <div class="winkTo">
+            <p>To listen to winks from a player, click or tap on player's nickname!</p>
             <span>Game {{ game }} - Wink To: </span>
             <b-dropdown text="Select Player To Wink">
                 <b-dropdown-item v-for="p in playersInGame" :key="p.name" @click="winkTo(p.order)">{{ p.order }}</b-dropdown-item>
