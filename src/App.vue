@@ -1,14 +1,18 @@
 <template>
     <div id="app">
         <div><router-link to="/"><img id="relizaLogo" src="/logo_svg_no_tag_3.svg" /></router-link></div>
-        <github-button href="https://github.com/taleodor/mafia-deployment"
-                        class="giveUsAStar"
-                        data-icon="octicon-star"
-                        data-size="large"
-                        data-show-count="true"
-                        aria-label="Star taleodor/mafia-deployment on GitHub">
-            Star
-        </github-button>
+        <span class="giveUsAStar">
+            <span class="mb-2"><router-link to="/">Home</router-link></span>
+            <span class="ml-3 pb-2"><router-link to="/rules">Rules</router-link></span>
+            <github-button href="https://github.com/taleodor/mafia-deployment"
+                            class="ml-3"
+                            data-icon="octicon-star"
+                            data-size="large"
+                            data-show-count="true"
+                            aria-label="Star taleodor/mafia-deployment on GitHub">
+                Star
+            </github-button>
+        </span>
         <router-view class="nofloat viewWrapper removeFloat" :key="$route.fullPath" />
     </div>
 </template>
