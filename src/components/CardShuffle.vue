@@ -57,19 +57,29 @@
             </b-form>
         </b-modal>
     </div>
-    <div class="playerInfoBlock" v-if="iPlayer && game > 0 && game === iPlayer.game">
-        <div class="winkTo">
+    <div class="playerInfoBlock" v-if="iPlayer && Object.keys(iPlayer).length && game > 0 && game === iPlayer.game">
+        <div class="winkTo" v-if="iPlayer.order !== 'Host' && iPlayer.order !== 'Guest'">
             <p>To listen to winks from a player, click or tap on player's nickname!</p>
             <span>Game {{ game }} - Wink To: </span>
             <b-dropdown text="Select Player To Wink">
                 <b-dropdown-item v-for="p in playersInGame" :key="p.name" @click="winkTo(p.order)">{{ p.order }}</b-dropdown-item>
             </b-dropdown>
         </div>
-        <h4 v-if="Object.keys(iPlayer).length && !iPlayer.card">You have joined this room as <strong>{{iPlayer.name}}</strong></h4>
-        <div class="cardBlock" v-if="iPlayer.card">
+        <h4 v-if="!iPlayer.card && iPlayer.order !== 'Guest' && iPlayer.order !== 'Host'">You have joined this room as <strong>{{iPlayer.name}}</strong></h4>
+        <div class="cardBlock" v-if="iPlayer.card && iPlayer.order !== 'Guest' && iPlayer.order !== 'Host'">
             <h4>You have joined this room as <strong>{{iPlayer.name}}</strong>, game <strong>#{{iPlayer.game}}</strong>, your card:</h4>
             <img class="cardImage" :src="cardImage" :title="iPlayer.card" :alt="'Your card: ' + iPlayer.card"/>
             <h4>{{ iPlayer.card }}</h4>
+        </div>
+    </div>
+    <div class="hostGuestBlock" v-if="iPlayer && Object.keys(iPlayer).length">
+        <h4 v-if="iPlayer.order === 'Guest'">You have joined this room as <strong>{{iPlayer.name}}</strong>. You are a Guest.</h4>
+        <div class="hostBlock" v-if="iPlayer.order === 'Host'">
+            <h4>You have joined this room as <strong>{{iPlayer.name}}</strong>. You are a Host.</h4>
+            <p>Game <strong>#{{ game }}</strong></p>
+            <ol>
+                <li class="hostInfo" v-for="p in hostGameArr" :key="p.order">{{p.order}}. {{p.card}}</li>
+            </ol>
         </div>
     </div>
     <div class="joinRenameGroup">
@@ -103,6 +113,7 @@ export default {
             admin: false,
             customRole: '',
             winkLink: [],
+            hostGameArr: [],
             game: 0,
             iPlayer: {},
             listenLink: [],
@@ -145,6 +156,24 @@ export default {
         },
         gamenumber (game) {
             this.game = game
+        },
+        gameset (hostGameObj) {
+            // call for host to retrieve card assignments for all players
+            let localGameArr = []
+            if (hostGameObj) {
+                Object.keys(hostGameObj).forEach(key => {
+                    let playerObj = {
+                        order: key,
+                        card: hostGameObj[key]
+                    }
+                    localGameArr.push(playerObj)
+                })
+                // order by number
+            }
+            this.hostGameArr = localGameArr
+            this.hostGameArr = this.hostGameArr.sort((a,b) => {
+                return a.order - b.order
+            })
         },
         joinedroom (name) {
             this.alertMsg = name + ' joined this game room!'
@@ -366,5 +395,10 @@ a {
 }
 .clickable {
     cursor: pointer;
+}
+li.hostInfo {
+    display: block;
+    text-align: left;
+    margin-left: 40%;
 }
 </style>
