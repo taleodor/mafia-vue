@@ -235,11 +235,16 @@ export default {
             }
         },
         winkTo (order) {
-            let winkObj = {
-                room: this.room,
-                winkTarget: order
+            if (order === this.iPlayer.order) {
+                this.alertMsg = "You cannot wink to yourself!"
+                this.alertCountDown = 5
+            } else {
+                let winkObj = {
+                    room: this.room,
+                    winkTarget: order
+                }
+                this.$socket.emit('winkTo', winkObj)
             }
-            this.$socket.emit('winkTo', winkObj)
         },
         kickPlayer (name) {
             let kickobj = {
