@@ -6,7 +6,7 @@
     <div v-else>
         <ul>
             <li v-for="p in playerList" :key="p.name">
-                <span :class="(p.order !== 'Host' && p.order !== 'Guest') ? 'clickable' : ''" @click="listenTo(p.order)"><span v-if="!admin">{{ p.order }}.</span>{{ p.name }} </span>
+                <span :class="(p.order !== 'Host' && p.order !== 'Guest' && p.order !== iPlayer.order) ? 'clickable' : ''" @click="listenTo(p.order)"><span v-if="!admin">{{ p.order }}.</span>{{ p.name }} </span>
                 <b-dropdown v-if="admin" :text="String(p.order)">
                     <b-dropdown-item v-for="i in computedOrderArray" :key="i" @click="updatePlayerOrder(i, p.name)">{{ i }}</b-dropdown-item>
                 </b-dropdown>
@@ -226,7 +226,7 @@ export default {
             this.alertCountDown = alertCountDown
         },
         listenTo (order) {
-            if (order !== 'Host' && order !== 'Guest') {
+            if (order !== 'Host' && order !== 'Guest' && order !== this.iPlayer.order) {
                 let listObj = {
                     room: this.room,
                     listenTarget: order
