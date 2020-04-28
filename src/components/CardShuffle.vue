@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <h1>Welcome to the room "{{ room }}"</h1>
+    <h1 class="welcomeRoom">Welcome to the room "{{ room }}"</h1>
     <h3>Players in this room ({{ playerList.length }}):</h3>
     <div v-if="!playerList.length">No players yet</div>
     <div v-else>
@@ -408,5 +408,8 @@ li.hostInfo {
     display: block;
     text-align: left;
     margin-left: 40%;
+}
+.welcomeRoom {
+    color: #9b7a70;
 }
 </style>
