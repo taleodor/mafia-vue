@@ -410,6 +410,6 @@ li.hostInfo {
     margin-left: 40%;
 }
 .welcomeRoom {
-    color: #9b7a70;
+    color: #9b7a71;
 }
 </style>
