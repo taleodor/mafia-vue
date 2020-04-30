@@ -329,7 +329,7 @@ export default {
             if (this.iPlayer && this.iPlayer.card && this.cardsWithImages.includes(this.iPlayer.card)) {
                 let maxNumImage = {
                     godfather: 6,
-                    sheriff: 3,
+                    sheriff: 4,
                     mafia: 17,
                     villager: 40
                 }
