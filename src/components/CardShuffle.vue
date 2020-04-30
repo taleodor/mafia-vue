@@ -335,7 +335,7 @@ export default {
                 }
                 // random image postfix
                 let imagePostfix = 1 + Math.floor(Math.random() * maxNumImage[this.iPlayer.card])
-                cardImage = this.imagePrefix + imageCardName + String(imagePostfix) + '.jpg'
+                cardImage = this.imagePrefix + this.iPlayer.card + String(imagePostfix) + '.jpg'
             }
             return cardImage
         },
