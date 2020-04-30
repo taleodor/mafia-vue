@@ -1,9 +1,11 @@
 <template>
     <div id="app">
         <div><router-link to="/"><img id="relizaLogo" src="/logo_svg_no_tag_3.svg" /></router-link></div>
-        <span class="giveUsAStar">
-            <span class="mb-2"><router-link to="/">Home</router-link></span>
-            <span class="ml-3 pb-2"><router-link to="/rules">Rules</router-link></span>
+        <div class="giveUsAStar">
+            <b-nav pills small>
+                <b-nav-item to="/">Home</b-nav-item>
+                <b-nav-item to="/rules">Rules</b-nav-item>
+            </b-nav>
             <github-button href="https://github.com/taleodor/mafia-deployment"
                             class="ml-3"
                             data-icon="octicon-star"
@@ -12,7 +14,7 @@
                             aria-label="Star taleodor/mafia-deployment on GitHub">
                 Star
             </github-button>
-        </span>
+        </div>
         <router-view class="nofloat viewWrapper removeFloat" :key="$route.fullPath" />
     </div>
 </template>
@@ -55,7 +57,8 @@ export default {
 }
 .giveUsAStar {
     float: right;
-    margin-right: 10px;
+    margin-right: 20px;
+    display: flex;
 }
 .removeFloat {
     clear: both;
