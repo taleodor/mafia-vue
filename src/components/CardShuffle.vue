@@ -328,10 +328,10 @@ export default {
             let cardImage = ''
             if (this.iPlayer && this.iPlayer.card && this.cardsWithImages.includes(this.iPlayer.card)) {
                 let maxNumImage = {
-                    godfather: 6,
-                    sheriff: 4,
-                    mafia: 17,
-                    villager: 40
+                    godfather: 8,
+                    sheriff: 6,
+                    mafia: 21,
+                    villager: 48
                 }
                 // random image postfix
                 let imagePostfix = 1 + Math.floor(Math.random() * maxNumImage[this.iPlayer.card])
