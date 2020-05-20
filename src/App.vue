@@ -5,6 +5,7 @@
             <b-nav pills small>
                 <b-nav-item to="/">Home</b-nav-item>
                 <b-nav-item to="/rules">Rules</b-nav-item>
+                <b-nav-item to="/clubs">Clubs</b-nav-item>
             </b-nav>
             <github-button href="https://github.com/taleodor/mafia-deployment"
                             class="ml-3"

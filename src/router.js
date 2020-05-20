@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from './components/Home.vue'
 import CardShuffle from './components/CardShuffle.vue'
 import Rules from './components/Rules.vue'
+import Clubs from './components/Clubs.vue'
 
 Vue.use(Router)
 
@@ -39,6 +40,14 @@ export default new Router({
             component: Rules,
             meta: {
                 title: 'Mafia Card Shuffle - Game Rules'
+            }
+        },
+        {
+            path: '/clubs',
+            name: 'Clubs',
+            component: Clubs,
+            meta: {
+                title: 'Mafia Card Shuffle - Clubs'
             }
         }
     ]
