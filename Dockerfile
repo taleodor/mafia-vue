@@ -1,4 +1,4 @@
-FROM node:10.18.0-jessie as build-stage
+FROM node:10.20.1-jessie as build-stage
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
