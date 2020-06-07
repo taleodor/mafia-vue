@@ -62,3 +62,11 @@ jobs:
           cat reliza_command
           # send data
           docker run --rm relizaio/reliza-go-client addrelease $(cat reliza_command)
+      - name: Fail build if reliza status is rejected
+        run: |
+          status_rejected_check=$(grep 'status rejected' reliza_command | wc -l)
+          if [ $status_rejected_check -gt 0 ]
+          then
+            echo "Failing build since Reliza build Status is rejected"
+            exit 1
+          fi
