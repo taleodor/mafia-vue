@@ -24,6 +24,8 @@ jobs:
           echo "::set-env name=RLZ_VER_JSON::$reliza_ver"
       - name: Extract Actual Version From JSON
         run: |
+          # debug
+          echo $RLZ_VER_JSON
           full_ver=$(echo $RLZ_VER_JSON | jq -r ".version")
           # version without meta for docker registry
           short_ver=$(echo $full_ver | jq -r ".dockerTagSafeVersion")
