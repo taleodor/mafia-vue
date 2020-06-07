@@ -25,8 +25,8 @@ jobs:
       - name: Extract Actual Version From JSON
         run: |
           full_ver=$(echo $RLZ_VER_JSON | jq -r ".version")
-          # version without meta for docker registry, since plus sign is not allowed there
-          short_ver=$(echo $full_ver | cut -d '+' -f 1)
+          # version without meta for docker registry
+          short_ver=$(echo $full_ver | jq -r ".dockerTagSafeVersion")
           echo "::set-env name=RLZ_FULL_VER::$full_ver"
           echo "::set-env name=RLZ_SHORT_VER::$short_ver"
       - name: Instantiate Reliza status as Rejected to handle possible build failure
