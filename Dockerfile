@@ -1,18 +1,19 @@
-FROM node:10.18.0-jessie as build-stage
+FROM node:14.4-buster as build-stage
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY ./ .
 RUN npm run build
 
-FROM nginx:1.17.8 as artifact-stage
+FROM nginx:1.19.0 as artifact-stage
 ARG CI_ENV=noci
 ARG GIT_COMMIT=git_commit_undefined
 ARG GIT_BRANCH=git_branch_undefined
 ARG VERSION=not_versioned
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 RUN echo "version=$VERSION" > /usr/share/nginx/html/version.html && echo "commit=$GIT_COMMIT" >> /usr/share/nginx/html/version.html && echo "branch=$GIT_BRANCH" >> /usr/share/nginx/html/version.html
-RUN chmod 0700 /usr/share/nginx/html && chmod 0644 -R /usr/share/nginx/html/* && chown nginx:nginx -R /usr/share/nginx/html && chmod 0700 /usr/share/nginx/html/js && chmod 0700 /usr/share/nginx/html/css && chmod 0700 /usr/share/nginx/html/licenses && chmod 0770 /usr/share/nginx/html/error_pages
+RUN chmod 0755 /usr/share/nginx/html && chmod 0644 -R /usr/share/nginx/html/*
+RUN find /usr/share/nginx/html -type d -exec chmod 0755 {} \;
 COPY nginx/default.conf /etc/nginx/conf.d/
 COPY nginx/nginx.template /etc/nginx/
 COPY nginx/nginx-entry.sh /
