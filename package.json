@@ -15,7 +15,7 @@
     "vue": "^2.6.11",
     "vue-github-button": "^1.2.0",
     "vue-router": "^3.3.2",
-    "vue-socket.io": "3.0.7"
+    "vue-socket.io": "3.0.10"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.4.6",
