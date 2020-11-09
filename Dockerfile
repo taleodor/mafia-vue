@@ -5,7 +5,7 @@ RUN npm install
 COPY ./ .
 RUN npm run build
 
-FROM nginx:1.19.1 as artifact-stage
+FROM nginx:1.19.4 as artifact-stage
 ARG CI_ENV=noci
 ARG GIT_COMMIT=git_commit_undefined
 ARG GIT_BRANCH=git_branch_undefined
