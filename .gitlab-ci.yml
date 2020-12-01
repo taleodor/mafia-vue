@@ -9,7 +9,7 @@ docker-build:
     - BUILD_START=$(date -Iseconds)
     - apk add git
     - docker pull relizaio/jq
-    - RLZ_VER_JSON=$(docker run --rm relizaio/reliza-go-client getversion -u $RELIZA_HUB_URI -k $RELIZA_API_KEY -i $RELIZA_API_ID -b $CI_COMMIT_REF_NAME --metadata GitLab)
+    - RLZ_VER_JSON=$(docker run --rm relizaio/reliza-go-client getversion -u $RELIZA_HUB_URI -k $RELIZA_PROJECT_API_KEY -i $RELIZA_PROJECT_API_ID -b $CI_COMMIT_REF_NAME --metadata GitLab)
     - RLZ_FULL_VER=$(echo $RLZ_VER_JSON | docker run -i --rm relizaio/jq -r ".version")
     - RLZ_SHORT_VER=$(echo $RLZ_VER_JSON | docker run -i --rm relizaio/jq -r ".dockerTagSafeVersion")
     - exit_code=0
