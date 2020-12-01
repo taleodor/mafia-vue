@@ -1,0 +1,31 @@
+docker-build:
+  image: docker:latest
+  stage: build
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - BUILD_START=$(date -Iseconds)
+    - apk add git
+    - docker pull relizaio/jq
+    - RLZ_VER_JSON=$(docker run --rm relizaio/reliza-go-client getversion -k $RELIZA_API_KEY -i $RELIZA_API_ID -b $CI_COMMIT_REF_NAME --metadata GitLab)
+    - RLZ_FULL_VER=$(echo $RLZ_VER_JSON | docker run -i --rm relizaio/jq -r ".version")
+    - RLZ_SHORT_VER=$(echo $RLZ_VER_JSON | docker run -i --rm relizaio/jq -r ".dockerTagSafeVersion")
+    - exit_code=0
+    - docker build -t $CI_REGISTRY_IMAGE:$RLZ_SHORT_VER -t $CI_REGISTRY_IMAGE:latest --build-arg VERSION=$RLZ_FULL_VER --build-arg CI_ENV=gitlab$CI_COMMIT_SHA --build-arg GIT_COMMIT=$CI_COMMIT_SHA --build-arg GIT_BRANCH=$CI_COMMIT_REF_NAME . || exit_code=$?
+    - if [ $exit_code -ne 0 ]; then echo -n "--status rejected " > reliza_command; fi;
+    - if [ $exit_code -eq 0 ]; then DOCKER_SHA_256=$(docker push $CI_REGISTRY_IMAGE:$RLZ_SHORT_VER | grep sha256 | cut -f 3 -d ' '); fi;
+    - if [ $exit_code -eq 0 ]; then docker push $CI_REGISTRY_IMAGE:latest; fi;
+    - echo -n "-b $CI_COMMIT_REF_NAME --vcstype git --commit $CI_COMMIT_SHA -k $RELIZA_PROJECT_API_KEY -i $RELIZA_PROJECT_API_ID --vcsuri $CI_PROJECT_URL --date $(git log -1 --date=iso-strict --pretty='%ad') -v $RLZ_FULL_VER " >> reliza_command
+    - echo -n "--artid $CI_REGISTRY_IMAGE " >> reliza_command
+    - echo -n "--artbuildid gitlab$CI_COMMIT_SHA " >> reliza_command
+    - echo -n "--artcimeta GitLab CI " >> reliza_command
+    - echo -n "--arttype Docker " >> reliza_command
+    - echo -n "--artdigests $DOCKER_SHA_256 " >> reliza_command
+    - echo -n "--datestart $BUILD_START " >> reliza_command
+    - echo -n "--dateend $(date -Iseconds) " >> reliza_command
+    - cat reliza_command
+    - docker run --rm relizaio/reliza-go-client addrelease $(cat reliza_command)
+    - if [ $exit_code -ne 0 ]; then echo "docker build failed, rejecting run"; fi;
+    - if [ $exit_code -ne 0 ]; then exit 1; fi;
