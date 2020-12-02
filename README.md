@@ -5,5 +5,6 @@ This is a UI Vue.js project for Mafia Card Shuffle (simple card and player order
 For details on deployment, please refer to [mafia deployment project](https://github.com/taleodor/mafia-deployment).
 
 
+
 # Other
 Any contributions are welcome!
