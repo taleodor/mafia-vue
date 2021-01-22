@@ -32,16 +32,32 @@
                     Powered by <a href="https://relizahub.com">Reliza Hub</a>
                 </b-col>
             </b-row>
+            <b-row v-if="VUE_APP_VERSION_URI && version" class="mt-5 mb-3 justify-content-md-center">
+                <b-col>
+                    Version: <a href="https://relizahub.com">{{version}}</a>
+                </b-col>
+            </b-row>
         </b-container>
     </div>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
     name: 'Home',
     data () {
         return {
-            room: ''
+            room: '',
+            version: '',
+            VUE_APP_VERSION_URI: process.env.VUE_APP_VERSION_URI
+        }
+    },
+    created () {
+        if(process.env.VUE_APP_VERSION_URI){
+            axios.get(process.env.VUE_APP_VERSION_URI).then(response => {
+                this.version = response.data
+            })
         }
     },
     props: {
