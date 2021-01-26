@@ -32,7 +32,7 @@
                     Powered by <a href="https://relizahub.com">Reliza Hub</a>
                 </b-col>
             </b-row>
-            <b-row v-if="VUE_APP_VERSION_URI && version" class="mt-5 mb-3 justify-content-md-center">
+            <b-row v-if="version" class="mt-5 mb-3 justify-content-md-center">
                 <b-col>
                     Version: <a href="https://relizahub.com">{{version}}</a>
                 </b-col>
