@@ -49,16 +49,11 @@ export default {
     data () {
         return {
             room: '',
-            version: '',
-            VUE_APP_VERSION_URI: process.env.VUE_APP_VERSION_URI
+            version: null
         }
     },
     created () {
-        if(process.env.VUE_APP_VERSION_URI){
-            axios.get(process.env.VUE_APP_VERSION_URI).then(response => {
-                this.version = response.data
-            })
-        }
+        this.getVersion()
     },
     props: {
         msg: String
@@ -73,7 +68,20 @@ export default {
         },
         submitRoom () {
             this.$router.push({ name: 'RoomShuffle', params: { room: this.room } })
-        }
+        },
+        getVersion () {
+            var versionUri
+            if (window.location.host === 'mafia.brolia.com') {
+                versionUri = 'https://app.relizahub.com/api/public/v1/instance/bundleVersion/94a8e3c3753ff9a4e8f77204bef8e1d3b388a90e749830921944804aa50ec94506081fe9c4547d8137316064b148c80fc250f4d9dfa38e47bfa756cf053f626274daab021464ee555629909f9c852a078fbcd5d1a4df863d5435c4a6eef4deff8b8b332a3547a865a84d14603f79f40c'
+            } else if (window.location.host === 'mafia-test.rhythm.relizahub.com') {
+                versionUri = 'https://rhythm.relizahub.com/api/public/v1/instance/bundleVersion/6356d4959840216d6ef9309731289ab5862b77be68deebb9876858ea2e7b95be7e2a8eaa667ede98b55b9c91ec00429b13bcff165d9c7407b1390954328586df5277a3a7c4bf73b93333ec92e5e9cf850e5402988305b9c94c7e89fcdcd63608050d2275ccc9fe9a0b7a53868afcf3c9'
+            }
+            if (versionUri) {
+                axios.get(versionUri).then(response => {
+                    this.version = response.data
+                })
+            }
+        },
     }
 }
 </script>
