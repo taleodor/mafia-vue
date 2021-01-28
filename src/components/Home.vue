@@ -72,7 +72,7 @@ export default {
         getVersion () {
             var versionUri
             if (window.location.host === 'mafia.brolia.com') {
-                versionUri = 'https://app.relizahub.com/api/public/v1/instance/bundleVersion/5a0e6cbdeb5caaf0dc28de67ddcdd796de807ae43b3b538f2893907696ec6edba9dd9405f30805e6377c621a498d57e60524eb9a4accf779c7d72bb395a30c515e3ba8c58ff00768d2d61cafcdf178a78602005ef8a91cd276202f96c69d4ba774d4e2a2673b7d15cb8c4648d4c02714'
+                versionUri = 'https://app.relizahub.com/api/public/v1/instance/bundleVersion/34f8bb36cdec42090f0fcc5a7a86f0857ae9e57af4b6c24a924deb74064fa5b8abc36c53101253387119b1635c9e51c40dfc04121e911c5777bd8383e21e375fb4fe24030846c7520ab67a310eb9755e14615aca61f3c2f8fe3d2895a38bcaded526c3d55449ea0b762b5c290985af79'
             } else if (window.location.host === 'mafia-test.rhythm.relizahub.com') {
                 versionUri = 'https://rhythm.relizahub.com/api/public/v1/instance/bundleVersion/6356d4959840216d6ef9309731289ab5862b77be68deebb9876858ea2e7b95be7e2a8eaa667ede98b55b9c91ec00429b13bcff165d9c7407b1390954328586df5277a3a7c4bf73b93333ec92e5e9cf850e5402988305b9c94c7e89fcdcd63608050d2275ccc9fe9a0b7a53868afcf3c9'
             } else if (window.location.host === 'mafia-staging.rhythm.relizahub.com') {
