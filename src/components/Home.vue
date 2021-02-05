@@ -29,12 +29,12 @@
             </b-row>
             <b-row class="mt-5 mb-3 justify-content-md-center">
                 <b-col>
-                    Powered by <a href="https://relizahub.com">Reliza Hub</a>
-                </b-col>
-            </b-row>
-            <b-row v-if="version" class="mt-5 mb-3 justify-content-md-center">
-                <b-col>
-                    Version: <a href="https://relizahub.com">{{version}}</a>
+                    <span v-if="version">
+                        Version: {{version}}.
+                    </span>
+                    <span class="ml-2">
+                        Powered by <a href="https://relizahub.com">Reliza Hub</a>.
+                    </span>
                 </b-col>
             </b-row>
         </b-container>
