@@ -28,7 +28,7 @@ spec:
     stages {
         stage ('Build and Deploy') {
             steps {
-                reliza (uri: 'https://test.relizahub.com') {
+                withReliza (uri: 'https://test.relizahub.com') {
                     script {
                         try {
                             env.COMMIT_TIME = sh(script: 'git log -1 --date=iso-strict --pretty="%ad"', returnStdout: true).trim()
@@ -45,7 +45,7 @@ spec:
                             env.STATUS = 'rejected'
                             echo 'FAILED BUILD: ' + e.toString()
                         }
-                        addRelease(artId: "relizatest/throw")
+                        addRelizaRelease(artId: "relizatest/throw")
                     }
                 }
             }
