@@ -28,7 +28,7 @@ spec:
     stages {
         stage ('Build and Deploy') {
             steps {
-                withReliza (uri: 'https://test.relizahub.com') {
+                withReliza (uri: 'https://test.relizahub.com', projectId: '2fbf10f2-5d49-44dc-a3d7-e5eb6964996a') {
                     script {
                         try {
                             env.COMMIT_TIME = sh(script: 'git log -1 --date=iso-strict --pretty="%ad"', returnStdout: true).trim()
