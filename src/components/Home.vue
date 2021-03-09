@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Hello to Mafia Card Shuffle!</h1>
+        <h1>Welcome to Mafia Card Shuffle!</h1>
         <b-container>
             <b-row class="justify-content-md-center">
                 <b-col>
