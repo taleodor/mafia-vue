@@ -32,7 +32,7 @@
     </div>
     <div v-if="admin" class="adminBlock">
         <h5 class="cardDistroStatus">Card distribution (only game master sees this):</h5>
-        <span v-for="gamecard in Object.keys(cards)" :key="gamecard" class="cardType">{{ gamecard }}: <b-input class="cardDistroInput" v-model='cards[gamecard]' /></span>
+        <span v-for="gamecard in Object.keys(cards)" :key="gamecard" class="cardType">{{ gamecard }}: <b-input class="cardDistroInput" v-model='cards[gamecard].num' /></span>
         <span class="h1 mr-3 clickable" v-b-modal.modal-add-custom-role title="Add Custom Role"><b-icon-plus-circle /></span>
         <b-button variant="success" @click="shuffleCards">Shuffle Cards!</b-button>
         <div class="cardDistroStatus">Distributed {{ distributedCards }} cards for {{ playersInGame.length }} players.</div>
@@ -135,10 +135,22 @@ export default {
             alertMsg: '',
             playerList: [],
             cards: {
-                sheriff: 1,
-                godfather: 1,
-                mafia: 2,
-                villager: 6
+                sheriff: {
+                    num: 1,
+                    image: 'sheriff'
+                },
+                godfather: {
+                    num: 1,
+                    image: 'godfather'
+                },
+                mafia: {
+                    num: 2,
+                    image: 'mafia'
+                },
+                villager: {
+                    num: 6,
+                    image: 'villager'
+                }
             },
             cardsWithImages: ['sheriff', 'godfather', 'mafia', 'villager'],
             imagePrefix: 'https://d7ge14utcyki8.cloudfront.net/mafia/'
@@ -228,7 +240,10 @@ export default {
     methods: {
         addRoleSubmit (e) {
             e.preventDefault()
-            this.cards[this.customRole] = 1
+            this.cards[this.customRole] = {
+                num: 0,
+                image: this.customRolePicture
+            }
             this.cards = Object.assign({}, this.cards) // needed for computed property to refresh
             this.$refs['modal-add-custom-role'].hide()
             this.customRole = ''
@@ -285,9 +300,13 @@ export default {
                 this.alertCountDown = 5
             } else {
                 // proceed with shuffle
+                let cardsForShuffle = {}
+                Object.keys(this.cards).forEach(ck => {
+                    cardsForShuffle[ck] = this.cards[ck].num
+                })
                 let shuffleObj = {
                     room: this.room,
-                    cards: this.cards
+                    cards: cardsForShuffle
                 }
                 this.$socket.emit('shufflecards', shuffleObj)
             }
@@ -337,7 +356,7 @@ export default {
     computed: {
         cardImage () {
             let cardImage = ''
-            if (this.iPlayer && this.iPlayer.card && this.cardsWithImages.includes(this.iPlayer.card)) {
+            if (this.iPlayer && this.iPlayer.card && this.cardsWithImages.includes(this.cards[this.iPlayer.card].image)) {
                 let maxNumImage = {
                     godfather: 15,
                     sheriff: 14,
@@ -345,8 +364,8 @@ export default {
                     villager: 58
                 }
                 // random image postfix
-                let imagePostfix = 1 + Math.floor(Math.random() * maxNumImage[this.iPlayer.card])
-                cardImage = this.imagePrefix + this.iPlayer.card + String(imagePostfix) + '.jpg'
+                let imagePostfix = 1 + Math.floor(Math.random() * maxNumImage[this.cards[this.iPlayer.card].image])
+                cardImage = this.imagePrefix + this.cards[this.iPlayer.card].image + String(imagePostfix) + '.jpg'
             }
             return cardImage
         },
@@ -370,7 +389,7 @@ export default {
         distributedCards () {
             let numCards = 0
             Object.values(this.cards).forEach(val => {
-                numCards += Number(val)
+                numCards += Number(val.num)
             })
             return numCards
         }
