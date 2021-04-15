@@ -53,6 +53,16 @@
                                 required
                                 placeholder="Enter Custom Role" />
                 </b-form-group>
+                <b-form-group   id="add_custom_role_picture_group"
+                                label="Picture Type"
+                                label-for="add_custom_role_picture"
+                                description="Choose picture type">
+                    <b-form-select
+                                id ="add_custom_role_picture"
+                                v-model="customRolePicture"
+                                placeholder="Choose Picture Type"
+                                :options="cardsWithImages" />
+                </b-form-group>
                 <b-button type="submit" variant="primary">Submit</b-button>
                 <b-button type="reset" variant="danger">Reset</b-button>
             </b-form>
@@ -113,6 +123,7 @@ export default {
         return {
             admin: false,
             customRole: '',
+            customRolePicture: '',
             winkLink: [],
             hostGameArr: [],
             game: 0,
