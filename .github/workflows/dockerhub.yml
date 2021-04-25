@@ -54,6 +54,7 @@ jobs:
       - name: Submit metadata to Reliza Hub
         run: |
           echo -n "-b $GITHUB_REF --vcstype git --commit $GITHUB_SHA -k ${{ secrets.RELIZA_API_KEY }} \
+            --commitmessage "$(git log -1 --pretty='%s')" \
             -i ${{ secrets.RELIZA_API_ID }} --vcsuri github.com/$GITHUB_REPOSITORY \
             --date $(git log -1 --date=iso-strict --pretty='%ad') \
             -v $RLZ_FULL_VER " >> reliza_command
