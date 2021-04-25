@@ -1,3 +1,7 @@
+upstream backend {
+    server ${HUB_HOST}:${HUB_PORT};
+}
+    
 server {
     listen       80;
     server_name  localhost;
