@@ -29,6 +29,16 @@ jobs:
           short_ver=$(echo $RLZ_VER_JSON | jq -r ".dockerTagSafeVersion")
           echo "RLZ_FULL_VER=$full_ver" >> $GITHUB_ENV
           echo "RLZ_SHORT_VER=$short_ver" >> $GITHUB_ENV
+      - name: Extract Last Release Commit And Prepare List Of Commits Debug
+        run: |
+          last_commit=$(docker run --rm relizaio/reliza-cli getlatestrelease -i ${{ secrets.RELIZA_API_ID }} -k ${{ secrets.RELIZA_API_KEY }} --branch $GITHUB_REF | jq -r ".sourceCodeEntryDetails.commit")
+          echo $last_commit
+          if [ ! -z "$last_commit" ]
+          then
+            echo "Adding last commit to rlz command"
+            echo -n "--commits $(git log $last_commit..$GITHUB_SHA --date=iso-strict --pretty='%H|||%ad|||%s' | base64 -w 0) " > rc
+            cat rc
+          fi
       - name: Instantiate Reliza status as Rejected to handle possible build failure
         run: echo "--status rejected " > reliza_command
       - name: Build and push docker container to Docker Hub
