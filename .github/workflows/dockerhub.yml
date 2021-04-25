@@ -31,7 +31,7 @@ jobs:
           echo "RLZ_SHORT_VER=$short_ver" >> $GITHUB_ENV
       - name: Extract Last Release Commit And Prepare List Of Commits Debug
         run: |
-          echo "$GIHUB_REF"
+          echo "branch = $GITHUB_REF"
           docker run --rm relizaio/reliza-cli getlatestrelease -i ${{ secrets.RELIZA_API_ID }} -k ${{ secrets.RELIZA_API_KEY }} --branch $GITHUB_REF
           last_commit=$(docker run --rm relizaio/reliza-cli getlatestrelease -i ${{ secrets.RELIZA_API_ID }} -k ${{ secrets.RELIZA_API_KEY }} --branch $GITHUB_REF | jq -r ".sourceCodeEntryDetails.commit")
           echo $last_commit
