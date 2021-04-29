@@ -1,0 +1,52 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: core-js
+    versions:
+    - 3.10.2
+    - 3.11.0
+  - dependency-name: eslint-plugin-vue
+    versions:
+    - 7.5.0
+    - 7.6.0
+    - 7.7.0
+    - 7.8.0
+  - dependency-name: "@vue/cli-plugin-babel"
+    versions:
+    - 4.5.11
+  - dependency-name: "@vue/cli-service"
+    versions:
+    - 4.5.11
+  - dependency-name: "@vue/cli-plugin-eslint"
+    versions:
+    - 4.5.11
+  - dependency-name: eslint
+    versions:
+    - 7.12.1
+- package-ecosystem: docker
+  directory: "/"
+  schedule:
+    interval: weekly
+    time: "10:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: node
+    versions:
+    - 15.10.0.pre.buster
+    - 15.11.0.pre.buster
+    - 15.12.0.pre.buster
+    - 15.13.0.pre.buster
+    - 15.6.0.pre.buster
+    - 15.7.0.pre.buster
+    - 15.8.0.pre.buster
+    - 15.9.0.pre.buster
+  - dependency-name: nginx
+    versions:
+    - 1.19.6
+    - 1.19.8
