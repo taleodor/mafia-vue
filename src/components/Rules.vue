@@ -10,7 +10,7 @@
                 You can use <a href="https://mafia.brolia.com">our card shuffler</a> to assign both.</p>
             <h4>2. Game Flow</h4>
             <h5>2.a. Zeroeth night</h5>
-            <p>In the beginning of the game host tells all players to "sleep" - meaning all players must close their eyes and / or use face mask.<p>
+            <p>In the beginning of the game host tells all players to "sleep" - meaning all players must close their eyes and / or use face mask.</p>
             <p>After that the host wakes up mafia and Godfather. Godfather identifies herself with a gesture (pointing to a shoulder)
                 and gives orders how the players will be shot using only gestures. The easiest way to do so is static: meaning that
                 the Godfather shows 3 numbers using fingers, i.e. 1 -- 3 -- 8. This means that on the 1st night player one will be shot,
@@ -32,7 +32,7 @@
                 to the list on the Zeroeth day, no voting is held. If there are 2 or more players in the list, this triggers voting.
                 A player who gets most votes leaves the game. If the vote is split between 2 players (i.e. 5 for 1 and 5 for 3) - they both 
                 get additional 30 seconds to talk. If the vote is split 2nd time, and the vote is split again, the vote is taken to kick
-                both players from the table. This vote requires simple majority.
+                both players from the table. This vote requires simple majority.</p>
             <p>After every player had their chance to speak, the host announces the beginning of the first night.</p>
             <h5>2.c. First night</h5>
             <p>During the first night the host first asks 3 Mafias (with Godfather) to show the numer of player they want to shoot
@@ -66,7 +66,7 @@
                 eliminated, the host still announces them - so not to reveal the roles of eliminated players.</p>
             <h5>2f. Second and subsequent days</h5>
             <p>Second and subsequent days are played exactly as the first day. However every time the speaking order is shifted by 1 
-                (if the previous day was started by player 3 - next would be started by player 4 etc).
+                (if the previous day was started by player 3 - next would be started by player 4 etc).</p>
             <h4>Victory Conditions</h4>
             <p><strong>Mafia wins</strong> if the number of red and black players at the table is equal (i.e., 3-3, 2-2 or 1-1).</p>
             <p><strong>The Village</strong> wins if all black players were eliminated from the game.</p>
