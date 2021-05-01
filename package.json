@@ -14,7 +14,7 @@
     "core-js": "^3.11.1",
     "vue": "^2.6.11",
     "vue-github-button": "^1.2.0",
-    "vue-router": "^3.3.2",
+    "vue-router": "^3.5.1",
     "vue-socket.io": "3.0.10"
   },
   "devDependencies": {
