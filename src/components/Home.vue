@@ -72,7 +72,7 @@ export default {
         getVersion () {
             var versionUri
             if (window.location.host === 'mafia.brolia.com') {
-                versionUri = 'https://app.relizahub.com/api/public/v1/instance/bundleVersion/34f8bb36cdec42090f0fcc5a7a86f0857ae9e57af4b6c24a924deb74064fa5b8abc36c53101253387119b1635c9e51c40dfc04121e911c5777bd8383e21e375fb4fe24030846c7520ab67a310eb9755e14615aca61f3c2f8fe3d2895a38bcaded526c3d55449ea0b762b5c290985af79'
+                versionUri = 'https://app.relizahub.com/api/public/v1/instance/bundleVersion/1e01eb64-2f88-474a-a7c6-b48bf6ff585d'
             } else if (window.location.host === 'mafia-test.rhythm.relizahub.com') {
                 versionUri = 'https://rhythm.relizahub.com/api/public/v1/instance/bundleVersion/6356d4959840216d6ef9309731289ab5862b77be68deebb9876858ea2e7b95be7e2a8eaa667ede98b55b9c91ec00429b13bcff165d9c7407b1390954328586df5277a3a7c4bf73b93333ec92e5e9cf850e5402988305b9c94c7e89fcdcd63608050d2275ccc9fe9a0b7a53868afcf3c9'
             } else if (window.location.host === 'mafia-staging.rhythm.relizahub.com') {
@@ -80,7 +80,7 @@ export default {
             } else if (window.location.host === 'mafia.rhythm.relizahub.com') {
                 versionUri = 'https://rhythm.relizahub.com/api/public/v1/instance/bundleVersion/fdbeec9b7f13b813ba151a9880789e8f205e6375ecd49652193fd8ebf5f673adfa7d79c8ff7b78ba7d7335955434d3a2a4269b5657e488c76fe0c412b4f51445bd8bd66ec6fecf313952960a03c452bcfc0ff4e2904fb7b7c80c128f635d35d2ebdb98c61feb6536dd8022d88a6d4369'
             } else if (window.location.host === 'testmafia.brolia.com') {
-                versionUri = 'https://app.relizahub.com/api/public/v1/instance/bundleVersion/24cd343be124dd25c829fabf6e70d9cf6b2e1995ee04e7e00332a79e4d2c5f745ac16cc3518a8aea05630d7c9d630d7acdb81caa8a4428a932a5c878e83680fb97a1461c923b31d2f2a5ed2280a11172eb7a498f85b2bf49da74c75b097dee6add44b2e85014b40e89b3740c9d135b50'
+                versionUri = 'https://app.relizahub.com/api/public/v1/instance/bundleVersion/3a11e78e-d8a0-4d2b-86de-e9d7126f568b'
             }
             if (versionUri) {
                 axios.get(versionUri).then(response => {
