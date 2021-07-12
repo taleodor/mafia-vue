@@ -27,8 +27,8 @@ jobs:
           fi
       - name: Get Version
         run: |
-          echo -n "-k ${{ secrets.RELIZA_API_KEY }} -i ${{ secrets.RELIZA_API_ID }} -b $GITHUB_REF --metadata GitHub " >> get_version_command
-          echo -n "--commit $GITHUB_SHA --commitmessage \"$(git log -1 --pretty='%s')\" " > get_version_command
+          echo -n "-k ${{ secrets.RELIZA_API_KEY }} -i ${{ secrets.RELIZA_API_ID }} -b $GITHUB_REF --metadata GitHub " > get_version_command
+          echo -n "--commit $GITHUB_SHA --commitmessage \"$(git log -1 --pretty='%s')\" " >> get_version_command
           if [ $COMMIT_LIST != "" ]
           then
             echo -n "--commits $COMMIT_LIST " >> get_version_command
