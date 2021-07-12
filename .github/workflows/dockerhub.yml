@@ -18,9 +18,26 @@ jobs:
           fetch-depth: 50
       - name: Login to Docker Registry
         run: echo ${{ secrets.DOCKER_TOKEN }} | docker login -u ${{ secrets.DOCKER_LOGIN }} --password-stdin
+      - name: Extract Last Release Commit And Prepare List Of Commits
+        run: |
+          last_commit=$(docker run --rm relizaio/reliza-cli getlatestrelease -i ${{ secrets.RELIZA_API_ID }} -k ${{ secrets.RELIZA_API_KEY }} --branch $GITHUB_REF | jq -r ".sourceCodeEntryDetails.commit")
+          if [ ! -z "$last_commit" ]
+          then
+            echo "COMMIT_LIST=$(git log $last_commit..$GITHUB_SHA --date=iso-strict --pretty='%H|||%ad|||%s' | base64 -w 0)" >> $GITHUB_ENV
+          fi
       - name: Get Version
         run: |
-          reliza_ver=$(docker run --rm relizaio/reliza-cli getversion -k ${{ secrets.RELIZA_API_KEY }} -i ${{ secrets.RELIZA_API_ID }} -b $GITHUB_REF --metadata GitHub)
+          echo -n "-k ${{ secrets.RELIZA_API_KEY }} -i ${{ secrets.RELIZA_API_ID }} -b $GITHUB_REF --metadata GitHub " >> get_version_command
+          echo -n "--commit $GITHUB_SHA --commitmessage \"$(git log -1 --pretty='%s')\" " > get_version_command
+          if [ $COMMIT_LIST != "" ]
+          then
+            echo -n "--commits $COMMIT_LIST " >> get_version_command
+          fi
+          # debug
+          cat reliza_command
+          # get version
+          echo -n "docker run --rm relizaio/reliza-cli getversion $(cat get_version_command) " >> get_version_exec
+          reliza_ver=$(get_version_exec)
           echo "completed getting ver"
           echo $reliza_ver
           echo "RLZ_VER_JSON=$reliza_ver" >> $GITHUB_ENV
@@ -44,13 +61,6 @@ jobs:
           # save sha256 to env var
           echo "DOCKER_SHA_256=$docker_sha_256" >> $GITHUB_ENV
           echo "--status complete " > reliza_command
-      - name: Extract Last Release Commit And Prepare List Of Commits
-        run: |
-          last_commit=$(docker run --rm relizaio/reliza-cli getlatestrelease -i ${{ secrets.RELIZA_API_ID }} -k ${{ secrets.RELIZA_API_KEY }} --branch $GITHUB_REF | jq -r ".sourceCodeEntryDetails.commit")
-          if [ ! -z "$last_commit" ]
-          then
-            echo -n "--commits $(git log $last_commit..$GITHUB_SHA --date=iso-strict --pretty='%H|||%ad|||%s' | base64 -w 0) " >> reliza_command
-          fi
       - name: Submit metadata to Reliza Hub
         run: |
           echo -n "-b $GITHUB_REF --vcstype git --commit $GITHUB_SHA -k ${{ secrets.RELIZA_API_KEY }} \
@@ -66,6 +76,10 @@ jobs:
           if [ $DOCKER_SHA_256 != "" ]
           then
             echo -n "--artdigests $DOCKER_SHA_256 " >> reliza_command
+          fi
+          if [ $COMMIT_LIST != "" ]
+          then
+            echo -n "--commits $COMMIT_LIST " >> reliza_command
           fi
           echo -n "--datestart $BUILD_START " >> reliza_command
           echo -n "--dateend $(date -Iseconds) " >> reliza_command
