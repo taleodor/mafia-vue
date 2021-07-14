@@ -34,7 +34,6 @@ jobs:
           echo "$(cat get_version_command)"
           # get version
           echo -n "docker run --rm relizaio/reliza-cli getversion $(cat get_version_command) " >> get_version_exec
-          eval "$(cat get_version_exec)"
           reliza_ver=$(eval "$(cat get_version_exec)")
           echo "completed getting ver"
           echo $reliza_ver
