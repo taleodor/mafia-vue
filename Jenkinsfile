@@ -1,7 +1,7 @@
 pipeline {
     agent {
         kubernetes {
-            defaultContainer 'kaniko'
+            defaultContainer 'alpine'
             yaml """
 apiVersion: v1
 kind: Pod
@@ -42,12 +42,8 @@ spec:
         stage('Build with Kaniko') {
             steps {
                 script {
-                    container(name: 'alpine') {
-                        sh 'apk add git'
-                    }
-                    env.COMMIT_TIME = container(name: 'alpine') {
-                        sh(script: 'git log -1 --date=iso-strict --pretty="%ad"', returnStdout: true).trim()
-                    }
+                    sh 'apk add git'
+                    env.COMMIT_TIME = sh(script: 'git log -1 --date=iso-strict --pretty="%ad"', returnStdout: true).trim()
                     withReliza(projectId: '28c3735d-a810-4a3f-9e3a-2a43932589b1') {
                         if (env.LATEST_COMMIT) {
                             env.COMMIT_LIST = getCommitListWithLatest()
@@ -70,9 +66,7 @@ spec:
                                 env.STATUS = 'rejected'
                                 echo 'FAILED BUILD: ' + e.toString()
                             }
-                            env.SHA_256 = container(name: 'alpine') {
-                                sh(script: 'cat /shared-data/termination-log', returnStdout: true).trim()
-                            }
+                            env.SHA_256 = sh(script: 'cat /shared-data/termination-log', returnStdout: true).trim()
                             echo "SHA 256 digest of our container = ${env.SHA_256}"
                             addRelizaRelease(artId: "$IMAGE_NAMESPACE/$IMAGE_NAME", artType: "Docker", useCommitList: 'true')
                         } else {
@@ -87,18 +81,12 @@ spec:
 
 String getCommitListNoLatest() {
   if (env.GIT_PREVIOUS_SUCCESSFUL_COMMIT) {
-    return container(name: 'alpine') {
-        sh(script: 'git log $GIT_PREVIOUS_SUCCESSFUL_COMMIT..$GIT_COMMIT --date=iso-strict --pretty="%H|||%ad|||%s" -- ./ | base64 -w 0', returnStdout: true).trim()
-    }   
+    return sh(script: 'git log $GIT_PREVIOUS_SUCCESSFUL_COMMIT..$GIT_COMMIT --date=iso-strict --pretty="%H|||%ad|||%s" -- ./ | base64 -w 0', returnStdout: true).trim()
   } else {
-    return container(name: 'alpine') {
-        sh(script: 'git log -1 --date=iso-strict --pretty="%H|||%ad|||%s" -- ./ | base64 -w 0', returnStdout: true).trim()
-    }
+    return sh(script: 'git log -1 --date=iso-strict --pretty="%H|||%ad|||%s" -- ./ | base64 -w 0', returnStdout: true).trim()
   }
 }
 
 String getCommitListWithLatest() {
-  return container(name: 'alpine') {
-      sh(script: 'git log $LATEST_COMMIT..$GIT_COMMIT --date=iso-strict --pretty="%H|||%ad|||%s" -- ./ | base64 -w 0', returnStdout: true).trim()
-  }
+  return sh(script: 'git log $LATEST_COMMIT..$GIT_COMMIT --date=iso-strict --pretty="%H|||%ad|||%s" -- ./ | base64 -w 0', returnStdout: true).trim()
 }
