@@ -62,12 +62,13 @@ spec:
                                         }
                                     }
                                 }
+                                env.SHA_256 = sh(script: 'cat /shared-data/termination-log', returnStdout: true).trim()
+                                echo "SHA 256 digest of our container = ${env.SHA_256}"
                             } catch (Exception e) {
                                 env.STATUS = 'rejected'
                                 echo 'FAILED BUILD: ' + e.toString()
+                                currentBuild.result = 'FAILURE'
                             }
-                            env.SHA_256 = sh(script: 'cat /shared-data/termination-log', returnStdout: true).trim()
-                            echo "SHA 256 digest of our container = ${env.SHA_256}"
                             addRelizaRelease(artId: "$IMAGE_NAMESPACE/$IMAGE_NAME", artType: "Docker", useCommitList: 'true')
                         } else {
                             echo 'Repeated build, skipping push'
