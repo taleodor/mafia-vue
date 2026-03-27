@@ -7,13 +7,13 @@
                 <b-nav-item to="/rules">Rules</b-nav-item>
                 <b-nav-item to="/clubs">Clubs</b-nav-item>
             </b-nav>
-            <github-button href="https://github.com/taleodor/mafia-deployment"
+            <github-button href="https://github.com/relizaio/rearm"
                             class="ml-3"
                             data-icon="octicon-star"
                             data-size="large"
                             data-show-count="true"
-                            aria-label="Star taleodor/mafia-deployment on GitHub">
-                Star
+                            aria-label="Support relizaio/rearm on GitHub">
+                Support our flagship project ReARM
             </github-button>
         </div>
         <router-view class="nofloat viewWrapper removeFloat" :key="$route.fullPath" />
